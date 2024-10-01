@@ -114,11 +114,7 @@ const RegisterScreen = () => {
             Forgot?
           </Text>
         </TouchableOpacity>
-        <Button
-          variant="outline"
-          isLoading={isSubmitting}
-          onPress={handleSubmit(onSubmit)}
-        >
+        <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
           Create Account
         </Button>
         <Button variant="link" onPress={() => router.navigate("/(auth)/login")}>

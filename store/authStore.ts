@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 type Store = {
   userInfo: User | null;
-  setUserInfo: (user: User) => void;
+  setUserInfo: (user: User | null) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   isLoading: boolean;

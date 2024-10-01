@@ -28,10 +28,8 @@ const LoginScreen = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const { setUserInfo, setIsLoggedIn } = useAuthStore();
+  const { setUserInfo, setIsLoggedIn, userInfo } = useAuthStore();
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    console.log("yo");
-
     try {
       const { data } = await client.post("/auth/login", {
         ...values,
@@ -102,11 +100,7 @@ const LoginScreen = () => {
             Forgot?
           </Text>
         </TouchableOpacity>
-        <Button
-          variant="outline"
-          isLoading={isSubmitting}
-          onPress={handleSubmit(onSubmit)}
-        >
+        <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
           Login
         </Button>
         <Button

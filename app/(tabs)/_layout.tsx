@@ -6,14 +6,14 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuthStore } from "@/store/authStore";
 import { StyleSheet, View } from "react-native";
 import LoadingAnimation from "@/components/LoadingAnimation";
-import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
+// import useCheckTokenValidity from "@/hooks/useCheckTokenValidity";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const { userInfo, isLoading } = useAuthStore();
+  const { isLoading, setUserInfo, userInfo } = useAuthStore();
 
-  const token = getFromAsyncStorage(Keys.AUTH_TOKEN);
+  // const { isAuthLoading, isAuthenticated } = useCheckTokenValidity();
 
   if (isLoading) {
     return (
@@ -30,7 +30,6 @@ export default function TabLayout() {
       </View>
     );
   }
-
   if (!userInfo) {
     return <Redirect href="/(auth)/login" />;
   }

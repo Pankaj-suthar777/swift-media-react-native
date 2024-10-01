@@ -79,7 +79,7 @@ const Button = ({
     >
       {isLoading ? (
         <Animated.View style={animatedStyle}>
-          <Icon name="loader" size={18} color="white" />
+          <Icon name="loader" size={18} />
         </Animated.View>
       ) : (
         <Text className={text}>{children}</Text>
