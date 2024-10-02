@@ -8,7 +8,6 @@ import { useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 const Post = ({ post }: { post: IPost }) => {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const isSaved = true;
   const { width } = useWindowDimensions();
 
@@ -39,19 +38,10 @@ const Post = ({ post }: { post: IPost }) => {
             <Image
               className={`w-full h-[200px] object-scale-down bg-white rounded-xl`}
               source={{ uri: post?.image }}
-              onLoad={() => setIsImageLoaded(true)}
             />
           </TouchableOpacity>
         )}
 
-        {/* Skeleton Loader */}
-        {/* {post?.image && !isImageLoaded && (
-          <View>
-            <PostSkelton />
-          </View>
-        )} */}
-
-        {/* Post Text */}
         <View className="pt-1 rounded-xl">
           <RenderHtml contentWidth={width} source={{ html: post?.text }} />
           <View className="flex-row w-full justify-between">
@@ -72,7 +62,7 @@ const Post = ({ post }: { post: IPost }) => {
                 <Text className="ml-2">{post?.savedPost?.length}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className="ml-2">
+              <TouchableOpacity className="mx-2">
                 <Entypo size={18} name="share" />
               </TouchableOpacity>
             </View>

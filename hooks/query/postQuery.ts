@@ -18,3 +18,21 @@ export const useGetFeed = (page: number) => {
     queryFn: () => fetchPosts(page),
   });
 };
+
+export const fetchUserPosts = async (
+  authorId: number,
+  page: number
+): Promise<PostsResponse> => {
+  const client = await getClient();
+  const response = await client.get<{ posts: Post[] }>(
+    `/user/post/${authorId}?page=${page}`
+  );
+  return response.data;
+};
+
+export const useFetchUserPosts = (authorId: number, page: number) => {
+  return useQuery({
+    queryKey: ["my-posts"],
+    queryFn: () => fetchUserPosts(authorId, page),
+  });
+};
