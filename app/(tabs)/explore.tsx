@@ -63,10 +63,15 @@ const FriendListScreen = () => {
       <View style={styles.card}>
         <Image source={{ uri: item.imageUrl }} style={styles.image} />
         <View style={styles.info}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.details}>
-            {item.country} - {item.age}
-          </Text>
+          {item.id !== "2" && (
+            <>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.details}>
+                {item.country} - {item.age}
+              </Text>
+            </>
+          )}
+
           <View style={styles.ratingContainer}>
             {Array.from({ length: 5 }).map((_, index) => (
               <Text key={index} style={styles.star}>

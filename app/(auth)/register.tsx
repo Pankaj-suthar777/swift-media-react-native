@@ -52,22 +52,9 @@ const RegisterScreen = () => {
   };
 
   return (
-    <View className="bg-white items-center justify-center">
-      <View className="h-1/2 w-full">
-        <ImageBackground
-          source={{
-            uri: "https://www.bootdey.com/image/580x580/20B2AA/20B2AA",
-          }}
-          className="w-full h-full justify-center items-center"
-        >
-          <View>
-            <Text className="text-2xl font-bold text-white">
-              My Awesome App
-            </Text>
-          </View>
-        </ImageBackground>
-      </View>
-      <View className="bg-white rounded-lg shadow-lg p-5 w-11/12 h-1/2 items-center">
+    <View className="bg-white flex-1 items-center justify-center">
+      <View className="bg-white rounded-lg shadow-lg p-5 w-11/12 items-center">
+        <Text className="text-3xl font-bold mb-12">Swift Media</Text>
         <Controller
           control={control}
           name={"name"}
@@ -109,18 +96,19 @@ const RegisterScreen = () => {
           )}
         />
 
-        <TouchableOpacity className="w-full text-right">
-          <Text className="text-teal-400 text-xs font-bold text-right">
-            Forgot?
-          </Text>
-        </TouchableOpacity>
         <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
           Create Account
         </Button>
         <Button variant="link" onPress={() => router.navigate("/(auth)/login")}>
           Login
         </Button>
-        <TouchableOpacity className="mt-5"></TouchableOpacity>
+        <View className="mt-3 mb-6 h-[1px] w-full bg-slate-200"></View>
+        <Button variant="outline" textClass="font-normal">
+          Continue with Google
+        </Button>
+        <Button variant="outline" textClass="font-normal">
+          Continue with Facebook
+        </Button>
       </View>
     </View>
   );

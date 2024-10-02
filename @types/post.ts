@@ -8,6 +8,7 @@ export interface Post {
   updated_at: string;
   image?: string;
   author: User;
+  authorId: number;
   vote: Vote[];
   savedPost: SavedPost[];
   visibility: "ONLY_FOLLOWING" | "PUBLIC";

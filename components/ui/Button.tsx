@@ -14,6 +14,8 @@ interface Props {
   variant?: "default" | "outline" | "ghost" | "disabled" | "link";
   isLoading?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
+  containerClass?: string;
+  textClass?: string;
 }
 
 const variantStyles = {
@@ -46,6 +48,8 @@ const Button = ({
   variant = "default",
   isLoading = false,
   onPress,
+  containerClass,
+  textClass,
 }: Props) => {
   const rotate = useSharedValue(0);
 
@@ -74,7 +78,7 @@ const Button = ({
   return (
     <TouchableOpacity
       onPress={isLoading ? () => {} : onPress}
-      className={container}
+      className={`${container} ${containerClass}`}
       disabled={variant === "disabled" || isLoading}
     >
       {isLoading ? (
@@ -82,7 +86,7 @@ const Button = ({
           <Icon name="loader" size={18} />
         </Animated.View>
       ) : (
-        <Text className={text}>{children}</Text>
+        <Text className={`${text} ${textClass}`}>{children}</Text>
       )}
     </TouchableOpacity>
   );

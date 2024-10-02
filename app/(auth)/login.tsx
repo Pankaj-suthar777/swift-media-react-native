@@ -1,7 +1,7 @@
 import Button from "@/components/ui/Button";
 import CustomTextInput from "@/components/ui/TextInput";
 import React from "react";
-import { Text, View, ImageBackground, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
@@ -22,8 +22,8 @@ const LoginScreen = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "qwert@gmail.com",
+      password: "123456",
     },
     resolver: zodResolver(loginSchema),
   });
@@ -51,22 +51,9 @@ const LoginScreen = () => {
   };
 
   return (
-    <View className="bg-white items-center justify-center">
-      <View className="h-1/2 w-full">
-        <ImageBackground
-          source={{
-            uri: "https://www.bootdey.com/image/580x580/20B2AA/20B2AA",
-          }}
-          className="w-full h-full justify-center items-center"
-        >
-          <View>
-            <Text className="text-2xl font-bold text-white">
-              My Awesome App
-            </Text>
-          </View>
-        </ImageBackground>
-      </View>
-      <View className="bg-white rounded-lg shadow-lg p-5 w-11/12 h-1/2 items-center">
+    <View className="bg-white flex-1 items-center justify-center">
+      <View className="bg-white rounded-lg shadow-lg p-5 w-11/12 items-center">
+        <Text className="text-3xl font-bold mb-12">Swift Media</Text>
         <Controller
           control={control}
           name={"email"}
@@ -103,13 +90,20 @@ const LoginScreen = () => {
         <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
           Login
         </Button>
+
         <Button
           variant="link"
           onPress={() => router.navigate("/(auth)/register")}
         >
           Create Account
         </Button>
-        <TouchableOpacity className="mt-5"></TouchableOpacity>
+        <View className="mt-3 mb-6 h-[1px] w-full bg-slate-200"></View>
+        <Button variant="outline" textClass="font-normal">
+          Continue with Google
+        </Button>
+        <Button variant="outline" textClass="font-normal">
+          Continue with Facebook
+        </Button>
       </View>
     </View>
   );
