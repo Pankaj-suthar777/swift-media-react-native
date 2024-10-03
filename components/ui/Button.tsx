@@ -11,7 +11,7 @@ import Animated, {
 
 interface Props {
   children: React.ReactNode;
-  variant?: "default" | "outline" | "ghost" | "disabled" | "link";
+  variant?: "default" | "outline" | "ghost" | "disabled" | "link" | "secondary";
   isLoading?: boolean;
   onPress?: (event: GestureResponderEvent) => void;
   containerClass?: string;
@@ -23,9 +23,13 @@ const variantStyles = {
     container: "p-2 mt-3 w-full items-center rounded-md bg-teal-400",
     text: "text-white font-bold",
   },
+  secondary: {
+    container: "p-2 mt-3 w-full items-center rounded-md  bg-green-100",
+    text: "text-green-600 text-center font-medium",
+  },
   outline: {
     container:
-      "p-2 mt-3 w-full items-center rounded-md bg-slate-200 shadow-sm hover:bg-slate-400",
+      "p-2 mt-3 w-full items-center rounded-md bg-slate-200 hover:bg-slate-400",
     text: "text-slate-800 font-medium",
   },
   ghost: {

@@ -53,7 +53,7 @@ const RegisterScreen = () => {
 
   return (
     <View className="bg-white flex-1 items-center justify-center">
-      <View className="bg-white rounded-lg shadow-lg p-5 w-11/12 items-center">
+      <View className="bg-white rounded-lg  -lg p-5 w-11/12 items-center">
         <Text className="text-3xl font-bold mb-12">Swift Media</Text>
         <Controller
           control={control}

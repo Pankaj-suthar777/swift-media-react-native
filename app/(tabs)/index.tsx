@@ -7,6 +7,7 @@ import Post from "@/components/post/Post";
 import PaginatedList from "@/components/ui/PaginatedList";
 import { useQueryClient } from "react-query";
 import EmptyRecords from "@/components/ui/EmptyRecords";
+import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
 
 let pageNo = 0;
 
@@ -17,14 +18,6 @@ const HomeScreen = () => {
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const { data, isLoading, isFetching } = useGetFeed(0);
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 bg-white justify-center items-center z-10">
-        <LoadingAnimation />
-      </View>
-    );
-  }
 
   const handleOnRefresh = () => {
     pageNo = 0;
@@ -55,6 +48,10 @@ const HomeScreen = () => {
     }
   };
 
+  if (isLoading) {
+    return <LoaderFullScreen />;
+  }
+
   return (
     <SafeAreaView className="bg-slate-50 flex-1">
       <Text className="text-2xl px-4 font-bold py-4">Feed</Text>
@@ -68,7 +65,6 @@ const HomeScreen = () => {
         isFetching={isFetchingMore}
         hasMore={hasMore}
       />
-      <View className="flex-grow mt-8 w-full" />
     </SafeAreaView>
   );
 };

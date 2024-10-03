@@ -1,25 +1,20 @@
 import { Stack } from "expo-router";
 import React from "react";
 
-export default function TabLayout() {
+export default function StackLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-        }}
-      />
-      <Stack.Screen
         name="explore"
         options={{
-          title: "Profile",
+          title: "Explore",
         }}
       />
       <Stack.Screen
-        name="user-profile"
+        name="profile/[userId]"
         options={{
           title: "Profile",
+          headerShown: false,
         }}
       />
     </Stack>

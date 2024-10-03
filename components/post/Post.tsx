@@ -6,32 +6,47 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { Post as IPost } from "@/@types/post";
 import { useWindowDimensions } from "react-native";
 import RenderHtml from "react-native-render-html";
+import { Link } from "expo-router";
+import { useAuthStore } from "@/store/authStore";
+import { VoteType } from "@/@types/vote";
 
 const Post = ({ post }: { post: IPost }) => {
+  const { userInfo } = useAuthStore();
   const isSaved = true;
   const { width } = useWindowDimensions();
-
   return (
     <View className="bg-slate-50 border border-slate-400 transition ease-in-out cursor-pointer rounded-xl p-2">
       <View className="">
-        <View className="items-center flex-row">
-          {/* User Avatar */}
-          <TouchableOpacity>
+        <Link
+          className="z-10"
+          href={
+            userInfo?.id !== post.authorId
+              ? {
+                  pathname: "/profile/[userId]",
+                  params: { userId: post.authorId },
+                }
+              : { pathname: "/(tabs)/profile" }
+          }
+        >
+          <View className="items-center flex-row">
+            {/* User Avatar */}
+
             <Image
               className="w-10 h-10 rounded-full object-cover mr-2"
               source={{ uri: post?.author?.avatar || "/user-profile2.jpg" }}
             />
-          </TouchableOpacity>
-          {/* Post Author and Time */}
-          <View className="flex justify-between w-full">
-            <TouchableOpacity className="flex flex-col gap-1">
-              <Text className="text-xs">posted by: {post?.author?.name}</Text>
-              <Text className="text-[10px]">
-                Created At: {moment(post?.created_at).startOf("hour").fromNow()}
-              </Text>
-            </TouchableOpacity>
+            {/* Post Author and Time */}
+            <View className="flex justify-between w-full">
+              <View className="flex flex-col gap-1">
+                <Text className="text-xs">posted by: {post?.author?.name}</Text>
+                <Text className="text-[10px]">
+                  Created At:{" "}
+                  {moment(post?.created_at).startOf("hour").fromNow()}
+                </Text>
+              </View>
+            </View>
           </View>
-        </View>
+        </Link>
         {/* Post Image */}
         {post?.image && (
           <TouchableOpacity className="mt-4">
@@ -67,9 +82,6 @@ const Post = ({ post }: { post: IPost }) => {
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* Post Footer */}
-          {/* Save Button */}
         </View>
       </View>
     </View>
@@ -79,12 +91,16 @@ const Post = ({ post }: { post: IPost }) => {
 export default Post;
 
 const SidePostActions = ({ post }: { post: IPost }) => {
+  const [vote, setVote] = useState<{ vote: VoteType | undefined }>();
+
   return (
     <View className="flex-row">
       {/* Upvote Section */}
       <View className="flex-row items-center gap-2">
         <TouchableOpacity
-          className={`border rounded-full border-slate-300 p-2 bg-green-200`}
+          className={`border rounded-full border-slate-300 p-2 ${
+            vote?.vote === "up-vote" ? "bg-green-200" : ""
+          }`}
         >
           <Entypo name="arrow-up" size={20} />
         </TouchableOpacity>
@@ -94,7 +110,9 @@ const SidePostActions = ({ post }: { post: IPost }) => {
       {/* Downvote Section */}
       <View className="flex-row items-center gap-2 ml-2">
         <TouchableOpacity
-          className={`border rounded-full border-slate-300 p-2 bg-red-200`}
+          className={`border rounded-full border-slate-300 p-2 ${
+            vote?.vote === "down-vote" ? "bg-red-200" : ""
+          }`}
         >
           <Entypo name="arrow-down" size={20} />
         </TouchableOpacity>

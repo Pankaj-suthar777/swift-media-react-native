@@ -10,22 +10,17 @@ import Post from "../post/Post";
 
 let pageNo = 0;
 
-const PostsTab = () => {
-  const { userInfo } = useAuthStore();
-  if (!userInfo) {
-    return;
-  }
-
+const PostsTab = ({ userId }: { userId: number }) => {
   const queryClient = useQueryClient();
 
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const { data, isLoading, isFetching } = useFetchUserPosts(userInfo?.id, 0);
+  const { data, isLoading, isFetching } = useFetchUserPosts(userId, 0);
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-white justify-center items-center z-10">
+      <View className="flex-1 flex-row bg-white justify-center items-start z-10 mt-8">
         <LoadingAnimation />
       </View>
     );
@@ -43,7 +38,7 @@ const PostsTab = () => {
     setIsFetchingMore(true);
     try {
       const nextPageNo = pageNo + 1;
-      const res = await fetchUserPosts(userInfo.id, nextPageNo);
+      const res = await fetchUserPosts(userId, nextPageNo);
 
       if (!res || !res.posts.length) {
         setHasMore(false);
@@ -72,7 +67,7 @@ const PostsTab = () => {
         isFetching={isFetchingMore}
         hasMore={hasMore}
       />
-      <View className="flex-grow mt-8 w-full" />
+      <View className="flex-grow h-4 mt-16 w-full"></View>
     </View>
   );
 };
