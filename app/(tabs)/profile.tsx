@@ -38,14 +38,19 @@ const ProfileScreen = () => {
               uri: "https://www.lightstalking.com/wp-content/uploads/backlit-beach-color-258109-3-1024x576.jpg",
             }}
           >
-            <Image
-              source={{
-                uri:
-                  userInfo?.avatar ||
-                  "https://bootdey.com/img/Content/avatar/avatar6.png",
-              }}
-              className="w-24 h-24 rounded-full absolute bottom-[-40px] mx-5"
-            />
+            {userInfo?.avatar ? (
+              <Image
+                source={{
+                  uri: userInfo?.avatar,
+                }}
+                className="w-24 h-24 rounded-full absolute bottom-[-40px] mx-5"
+              />
+            ) : (
+              <Image
+                source={require("../../assets/images/user-profile2.jpg")}
+                className="w-24 h-24 rounded-full absolute bottom-[-40px] mx-5"
+              />
+            )}
           </ImageBackground>
 
           <View className="p-5">

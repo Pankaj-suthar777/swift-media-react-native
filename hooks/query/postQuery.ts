@@ -32,7 +32,7 @@ export const fetchUserPosts = async (
 
 export const useFetchUserPosts = (authorId: number, page: number) => {
   return useQuery({
-    queryKey: ["my-posts", authorId],
+    queryKey: ["posts", authorId],
     queryFn: () => fetchUserPosts(authorId, page),
   });
 };

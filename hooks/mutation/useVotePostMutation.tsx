@@ -1,25 +1,17 @@
+import { VoteType } from "@/@types/vote";
+import { getClient } from "@/api/client";
 import { useMutation } from "react-query";
 
-const useVotePostMutation = ({
-  vote,
-  id,
-}: {
-  vote: "up-vote" | "down-vote";
-  id: string;
-}) => {
-  return useMutation({
-    mutationFn : 
-  })
+const useVotePostMutation = ({ id }: { id: number }) => {
+  const mutation = useMutation(async ({ vote }: { vote: VoteType }) => {
+    const client = await getClient();
+    const response = await client.post(`/post/up-or-down-vote/${id}`, {
+      vote,
+    });
+    return response?.data;
+  });
+
+  return mutation;
 };
 
 export default useVotePostMutation;
-
-// UpOrDownVote: builder.mutation({
-//     query({ vote, id }: { vote: "up-vote" | "down-vote"; id: string }) {
-//       return {
-//         url: `/post/up-or-down-vote/${id}`,
-//         method: "POST",
-//         body: { vote },
-//       };
-//     },
-//   }),
