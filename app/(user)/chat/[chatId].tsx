@@ -60,11 +60,9 @@ export default function ChatScreen() {
 
   useEffect(() => {
     const getOnlineUserHandler = (usersIds: any) => {
-      console.log(usersIds);
       const currentChatFriend = usersIds.find(
         (f: any) => parseInt(f) === chatUser?.id
       );
-      console.log(currentChatFriend);
 
       if (currentChatFriend) {
         setChatUser({
@@ -125,7 +123,6 @@ export default function ChatScreen() {
     setInputMessage("");
   }
 
-  // Scroll to the bottom when data changes or a new message is added
   useEffect(() => {
     if (flatListRef.current && data) {
       flatListRef.current.scrollToEnd({ animated: true });
