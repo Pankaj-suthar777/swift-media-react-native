@@ -22,7 +22,7 @@ const HomeScreen = () => {
   const handleOnRefresh = () => {
     pageNo = 0;
     setHasMore(true);
-    queryClient.invalidateQueries(["posts"]); // Adjusted to use the array form
+    queryClient.invalidateQueries(["posts"]);
   };
 
   const handleOnEndReached = async () => {

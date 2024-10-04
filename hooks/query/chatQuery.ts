@@ -34,7 +34,7 @@ export const fetchChatMessage = async (
 
 export const useFetchChatMessageQuery = (chatId: number) => {
   return useQuery({
-    queryKey: ["chat", chatId],
+    queryKey: ["chat-messages", chatId],
     queryFn: () => fetchChatMessage(chatId),
   });
 };

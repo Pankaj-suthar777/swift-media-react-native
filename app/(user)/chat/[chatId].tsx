@@ -1,33 +1,33 @@
-import { useFetchChatMessageQuery } from "@/hooks/query/chatQuery";
-import { useAuthStore } from "@/store/authStore";
-import { useChatStore } from "@/store/chatStore";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Link, useLocalSearchParams, useNavigation } from "expo-router";
-import moment from "moment";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  StyleSheet,
-  Text,
+  FlatList,
   View,
-  Image,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Keyboard,
-  FlatList,
+  Text,
   Dimensions,
+  TouchableWithoutFeedback,
+  Image,
+  StyleSheet,
 } from "react-native";
+import { useQueryClient } from "react-query";
+import moment from "moment";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation, Link, useLocalSearchParams } from "expo-router";
+import { useFetchChatMessageQuery } from "@/hooks/query/chatQuery";
+import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
+import { useAuthStore } from "@/store/authStore";
+import { useChatStore } from "@/store/chatStore";
 
 export default function ChatScreen() {
   const navigation = useNavigation();
-
   const { chatId } = useLocalSearchParams();
   const { userInfo } = useAuthStore();
-
   const { data } = useFetchChatMessageQuery(parseInt(chatId as string));
-
   const { chats } = useChatStore();
-
+  const queryClient = useQueryClient();
+  const [inputMessage, setInputMessage] = useState("");
   const [chatUser, setChatUser] = useState<{
     name: string | undefined;
     profile_image: string | undefined;
@@ -35,12 +35,12 @@ export default function ChatScreen() {
     id: number | undefined;
   }>();
 
+  const flatListRef = useRef<FlatList>(null); // Create ref for FlatList
+
   useEffect(() => {
     if (chats && chatId.length > 0) {
       const chat = chats.find((c) => c.id === parseInt(chatId as string));
-
       const friend = chat?.friends.find((f) => f.id !== userInfo?.id);
-
       setChatUser({
         name: friend?.name,
         profile_image: friend?.avatar,
@@ -50,15 +50,39 @@ export default function ChatScreen() {
     }
   }, [chats]);
 
-  const [inputMessage, setInputMessage] = useState("");
+  const { mutate } = useSendMessageMutation(chatUser?.id as number);
 
   function sendMessage() {
-    if (inputMessage === "") {
+    if (inputMessage === "" || !data) {
       return setInputMessage("");
     }
 
+    mutate({ text: inputMessage });
+
+    const newMessage = {
+      text: inputMessage,
+      senderId: userInfo?.id,
+      chat_id: parseInt(chatId as string),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    queryClient.setQueryData(
+      ["chat-messages", parseInt(chatId as string)],
+      (oldData: any) => {
+        return [...(oldData || []), newMessage];
+      }
+    );
+
     setInputMessage("");
   }
+
+  // Scroll to the bottom when data changes or a new message is added
+  useEffect(() => {
+    if (flatListRef.current && data) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [data]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -73,9 +97,7 @@ export default function ChatScreen() {
           <View style={styles.headerLeft}>
             <TouchableOpacity
               style={{ paddingRight: 10 }}
-              onPress={() => {
-                navigation.goBack();
-              }}
+              onPress={() => navigation.goBack()}
             >
               <Ionicons name="arrow-back" size={30} color="black" />
             </TouchableOpacity>
@@ -87,12 +109,7 @@ export default function ChatScreen() {
                   : require("../../../assets/images/user-profile2.jpg")
               }
             />
-            <View
-              style={{
-                paddingLeft: 10,
-                justifyContent: "center",
-              }}
-            >
+            <View style={{ paddingLeft: 10, justifyContent: "center" }}>
               <Text style={{ color: "black", fontWeight: "700", fontSize: 18 }}>
                 {chatUser?.name}
               </Text>
@@ -107,70 +124,67 @@ export default function ChatScreen() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <FlatList
+          ref={flatListRef} // Set reference to FlatList
           style={{ backgroundColor: "#f2f2ff" }}
-          inverted={true}
           data={data}
-          renderItem={({ item }) => (
-            <TouchableWithoutFeedback>
-              <View style={{ marginTop: 6 }}>
-                <View
-                  style={{
-                    maxWidth: Dimensions.get("screen").width * 0.8,
-                    backgroundColor: "#3a6ee8",
-                    alignSelf:
-                      item.senderId === userInfo?.id
-                        ? "flex-end"
-                        : "flex-start",
-                    marginHorizontal: 10,
-                    padding: 10,
-                    borderRadius: 8,
-                    borderBottomLeftRadius:
-                      item.senderId === userInfo?.id ? 8 : 0,
-                    borderBottomRightRadius:
-                      item.senderId === userInfo?.id ? 0 : 8,
-                  }}
-                >
-                  <Text
+          renderItem={({ item }) => {
+            const isOtherUser = item.senderId !== userInfo?.id;
+            return (
+              <TouchableWithoutFeedback>
+                <View style={{ marginTop: 6 }}>
+                  <View
                     style={{
-                      color: "#fff",
-                      fontSize: 16,
+                      maxWidth: Dimensions.get("screen").width * 0.8,
+                      backgroundColor: isOtherUser ? "white" : "#3a6ee8",
+                      alignSelf: isOtherUser ? "flex-start" : "flex-end",
+                      marginHorizontal: 10,
+                      padding: 10,
+                      borderRadius: 8,
+                      borderBottomLeftRadius: isOtherUser ? 0 : 8,
+                      borderBottomRightRadius: isOtherUser ? 8 : 0,
                     }}
                   >
-                    {item.text}
-                  </Text>
-                  <Text
-                    style={{
-                      color: "#dfe4ea",
-                      fontSize: 14,
-                      alignSelf: "flex-end",
-                    }}
-                  >
-                    {moment(item?.created_at).format("LT")}
-                  </Text>
+                    <Text
+                      style={{
+                        color: isOtherUser ? "black" : "#fff",
+                        fontSize: 16,
+                      }}
+                    >
+                      {item.text}
+                    </Text>
+                    <Text
+                      style={{
+                        color: isOtherUser ? "black" : "#dfe4ea",
+                        fontSize: 14,
+                        alignSelf: "flex-end",
+                      }}
+                    >
+                      {moment(item.created_at).format("LT")}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-          )}
+              </TouchableWithoutFeedback>
+            );
+          }}
+          onContentSizeChange={() =>
+            flatListRef.current?.scrollToEnd({ animated: true })
+          } // Auto scroll to bottom on content change
         />
 
         <View style={{ paddingVertical: 10 }}>
           <View style={styles.messageInputView}>
             <TextInput
-              defaultValue={inputMessage}
+              value={inputMessage}
               style={styles.messageInput}
               placeholder="Message"
-              onChangeText={(text) => setInputMessage(text)}
-              onSubmitEditing={() => {
-                sendMessage();
-              }}
+              onChangeText={setInputMessage}
+              onSubmitEditing={sendMessage}
             />
             <TouchableOpacity
               style={styles.messageSendView}
-              onPress={() => {
-                sendMessage();
-              }}
+              onPress={sendMessage}
             >
-              <Ionicons name="send" type="material" />
+              <Ionicons name="send" size={24} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -183,7 +197,6 @@ const styles = StyleSheet.create({
   headerLeft: {
     paddingVertical: 4,
     paddingHorizontal: 10,
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
@@ -198,7 +211,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2ff",
   },
   messageInputView: {
-    display: "flex",
     flexDirection: "row",
     marginHorizontal: 14,
     backgroundColor: "#fff",

@@ -1,4 +1,3 @@
-import { VoteType } from "@/@types/vote";
 import { getClient } from "@/api/client";
 import { useMutation } from "react-query";
 
