@@ -19,6 +19,7 @@ import { useFetchChatMessageQuery } from "@/hooks/query/chatQuery";
 import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
+import { useSocketContext } from "@/context/SocketContext";
 
 export default function ChatScreen() {
   const navigation = useNavigation();
@@ -35,7 +36,54 @@ export default function ChatScreen() {
     id: number | undefined;
   }>();
 
-  const flatListRef = useRef<FlatList>(null); // Create ref for FlatList
+  const flatListRef = useRef<FlatList>(null);
+  const { socket } = useSocketContext();
+
+  useEffect(() => {
+    const handleNewMessage = (newMessage: any) => {
+      queryClient.setQueryData(
+        ["chat-messages", parseInt(chatId as string)],
+        (oldData: any) => {
+          return [...(oldData || []), newMessage];
+        }
+      );
+    };
+
+    socket?.on("newMessage", handleNewMessage);
+
+    return () => {
+      if (socket) {
+        socket.off("newMessage", handleNewMessage);
+      }
+    };
+  }, [socket, chatId, queryClient]);
+
+  useEffect(() => {
+    const getOnlineUserHandler = (usersIds: any) => {
+      console.log(usersIds);
+      const currentChatFriend = usersIds.find(
+        (f: any) => parseInt(f) === chatUser?.id
+      );
+      console.log(currentChatFriend);
+
+      if (currentChatFriend) {
+        setChatUser({
+          last_seen: "online",
+          id: chatUser?.id,
+          name: chatUser?.name,
+          profile_image: chatUser?.profile_image,
+        });
+      }
+    };
+
+    socket?.on("getOnlineUsers", getOnlineUserHandler);
+
+    return () => {
+      if (socket) {
+        socket.off("getOnlineUsers", getOnlineUserHandler);
+      }
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (chats && chatId.length > 0) {
@@ -109,9 +157,27 @@ export default function ChatScreen() {
                   : require("../../../assets/images/user-profile2.jpg")
               }
             />
-            <View style={{ paddingLeft: 10, justifyContent: "center" }}>
+            <View
+              style={{
+                paddingLeft: 10,
+                alignItems: "flex-end",
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
               <Text style={{ color: "black", fontWeight: "700", fontSize: 18 }}>
                 {chatUser?.name}
+              </Text>
+              <Text
+                style={{
+                  color: "black",
+                  fontWeight: "700",
+                  fontSize: 10,
+                  marginLeft: 10,
+                }}
+              >
+                {chatUser?.last_seen}
               </Text>
             </View>
           </View>
