@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Alert, Text } from "react-native";
 import { Image, TouchableOpacity, View } from "react-native";
 import moment from "moment";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -12,6 +12,7 @@ import { VoteType } from "@/@types/vote";
 import useVotePostMutation from "@/hooks/mutation/useVotePostMutation";
 import { useQueryClient } from "react-query";
 import useSavePostMutation from "@/hooks/mutation/useSavePostMutation";
+import { Share } from "react-native";
 
 const Post = ({ post }: { post: IPost }) => {
   const { userInfo } = useAuthStore();
@@ -36,6 +37,28 @@ const Post = ({ post }: { post: IPost }) => {
     mutate();
     setIsSaved(!isSaved);
     setSavedPostNum(isSaved ? savedPostNum - 1 : savedPostNum + 1);
+  };
+
+  // Share post handler
+  const sharePostHandler = async () => {
+    try {
+      const postLink = `https://swift-rivals-mern.vercel.app/user/posts/${post.id}`;
+
+      const result = await Share.share({
+        message: `Check out this post from ${post.author.name}: ${postLink}`,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+        } else {
+          // Shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Dismissed
+      }
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while trying to share the post.");
+    }
   };
 
   return (
@@ -108,7 +131,7 @@ const Post = ({ post }: { post: IPost }) => {
                 <Text className="ml-2">{savedPostNum}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity className="mx-2">
+              <TouchableOpacity className="mx-2" onPress={sharePostHandler}>
                 <Entypo size={18} name="share" />
               </TouchableOpacity>
             </View>
@@ -143,7 +166,6 @@ const SidePostActions = ({ post }: { post: IPost }) => {
 
     mutate({ vote: v });
 
-    // Update the cache optimistically
     queryClient.setQueryData(
       ["posts"],
       (oldData: { posts: IPost[] } | undefined) => {

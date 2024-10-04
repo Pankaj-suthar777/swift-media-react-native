@@ -6,6 +6,8 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuthStore } from "@/store/authStore";
 import { StyleSheet, View } from "react-native";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 // import useCheckTokenValidity from "@/hooks/useCheckTokenValidity";
 
 export default function TabLayout() {
@@ -47,6 +49,30 @@ export default function TabLayout() {
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={"home"} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: "Explore",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={"search1"} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chats"
+        options={{
+          headerShown: true,
+          title: "Chat",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              IconComponent={Ionicons}
+              name={"chatbubble-outline"}
+              color={color}
+            />
           ),
         }}
       />

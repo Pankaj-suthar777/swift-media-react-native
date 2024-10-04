@@ -20,7 +20,7 @@ const PostsTab = ({ userId }: { userId: number }) => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 flex-row bg-white justify-center items-start z-10 mt-8">
+      <View className="flex-1 flex-row justify-center items-start z-10 mt-8">
         <LoadingAnimation />
       </View>
     );
@@ -56,7 +56,7 @@ const PostsTab = ({ userId }: { userId: number }) => {
   };
 
   return (
-    <View className="mt-4">
+    <View className="">
       <PaginatedList
         data={data?.posts}
         renderItem={({ item }) => <Post post={item} />}

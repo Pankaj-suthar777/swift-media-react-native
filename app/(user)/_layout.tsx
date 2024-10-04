@@ -5,16 +5,16 @@ export default function StackLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-        }}
-      />
-      <Stack.Screen
         name="profile/[userId]"
         options={{
           title: "Profile",
           headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="chat/[chatId]"
+        options={{
+          title: "Profile",
         }}
       />
     </Stack>
