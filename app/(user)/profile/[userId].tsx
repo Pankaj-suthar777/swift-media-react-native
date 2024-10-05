@@ -2,8 +2,9 @@ import AboutTab from "@/components/profile/AboutTab";
 import PostsTab from "@/components/profile/PostTab";
 import Button from "@/components/ui/Button";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
+import { useFetchOtherUserChatWithMe } from "@/hooks/query/chatQuery";
 import { useFetchUser } from "@/hooks/query/userQuery";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useRef, useState } from "react";
 import { RefreshControl } from "react-native";
 import {
@@ -76,8 +77,12 @@ export default function ProfileScreen() {
     // Simulate a network request (e.g., fetching new data)
     setTimeout(() => {
       setRefreshing(false);
-    }, 2000); // Adjust the timeout to match your loading duration
+    }, 2000);
   };
+
+  const { data: chatData } = useFetchOtherUserChatWithMe(
+    parseInt(userId as string)
+  );
 
   if (isLoading) {
     return (
@@ -86,6 +91,7 @@ export default function ProfileScreen() {
       </View>
     );
   }
+
   return (
     <SafeAreaView>
       <View>
@@ -133,7 +139,28 @@ export default function ProfileScreen() {
               </View>
 
               <View className="flex-1">
-                <Button variant="ghost">Message</Button>
+                <Button
+                  variant="ghost"
+                  onPress={() => {
+                    if (chatData?.id) {
+                      router.push({
+                        pathname: "/(user)/chat/[chatId]",
+                        params: {
+                          chatId: chatData.id,
+                        },
+                      });
+                    } else {
+                      router.push({
+                        pathname: "/(user)/chat/new-chat/[userId]",
+                        params: {
+                          userId: userId as string,
+                        },
+                      });
+                    }
+                  }}
+                >
+                  Message
+                </Button>
               </View>
             </View>
           </View>

@@ -21,25 +21,26 @@ const ExploreScreen = () => {
   if (isLoading || data === undefined) {
     return <LoaderFullScreen />;
   }
-  // <CustomTextInput placeholder="Search" />
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeArea}>
       <Pressable
         className="mx-4"
         onPress={() => {
           router.push("/(user)/search/search");
         }}
       >
-        <View className="flex-row items-center bg-gray-200 rounded-full p-2 mt-4">
+        <View className="flex-row items-center bg-gray-200 rounded-full p-2">
           <Ionicons name="search" size={20} color="gray" />
           <View style={{ flex: 1 }} className="ml-2 text-base">
             <Text>Search...</Text>
           </View>
         </View>
       </Pressable>
+
       <FlatList
         data={data?.peoples}
-        renderItem={renderFriend}
+        renderItem={RenderFriend}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.container}
       />
@@ -47,7 +48,52 @@ const ExploreScreen = () => {
   );
 };
 
-export const renderFriend = ({ item }: { item: People }) => {
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1, // Ensure it takes up full height, so the padding applies correctly
+  },
+  container: {
+    padding: 10,
+    paddingBottom: 80, // Add padding to avoid content being cut off by tab bar
+  },
+  card: {
+    flexDirection: "row",
+    backgroundColor: "#fbfbfb",
+    borderWidth: 2,
+    borderColor: "#DCDCDC",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  info: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  about: {
+    fontSize: 14,
+    color: "#888",
+    marginVertical: 5,
+  },
+});
+
+export default ExploreScreen;
+
+export const RenderFriend = ({
+  item,
+  showFollowButton = true,
+}: {
+  item: People;
+  showFollowButton?: boolean;
+}) => {
   const plainText = item.about ? HTMLParser.parse(item.about).text : "";
   return (
     <View style={styles.card}>
@@ -93,7 +139,7 @@ export const renderFriend = ({ item }: { item: People }) => {
             )}
           </Pressable>
         </Link>
-        {item.isFollowing && (
+        {showFollowButton && (
           <Button variant="ghost">
             {item.isFollowing ? "Unfollow" : "Follow"}
           </Button>
@@ -102,69 +148,3 @@ export const renderFriend = ({ item }: { item: People }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-  },
-  card: {
-    flexDirection: "row",
-    backgroundColor: "#fbfbfb",
-    borderWidth: 2,
-    borderColor: "#DCDCDC",
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  info: {
-    marginLeft: 10,
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  details: {
-    fontSize: 14,
-    color: "#888",
-    marginVertical: 5,
-  },
-  ratingContainer: {
-    flexDirection: "row",
-  },
-  star: {
-    fontSize: 16,
-    color: "#FFD700",
-  },
-  sports: {
-    fontSize: 14,
-    color: "#888",
-    marginVertical: 5,
-  },
-  button: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#2ECC71",
-    paddingVertical: 5,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#2ECC71",
-    fontSize: 16,
-  },
-  about: {
-    fontSize: 14,
-    color: "#888",
-    marginVertical: 5,
-  },
-});
-
-export default ExploreScreen;

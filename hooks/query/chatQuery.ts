@@ -38,3 +38,18 @@ export const useFetchChatMessageQuery = (chatId: number) => {
     queryFn: () => fetchChatMessage(chatId),
   });
 };
+
+export const fetchOtherUserChatWithMe = async (
+  userId: number
+): Promise<Chat> => {
+  const client = await getClient();
+  const response = await client.get(`/chat/other-user-chat-with-me/${userId}`);
+  return response.data;
+};
+
+export const useFetchOtherUserChatWithMe = (chatId: number) => {
+  return useQuery({
+    queryKey: ["is-chat-available", chatId],
+    queryFn: () => fetchOtherUserChatWithMe(chatId),
+  });
+};

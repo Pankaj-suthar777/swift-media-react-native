@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomTextInput from "@/components/ui/TextInput";
 import { useNavigation } from "expo-router";
-import { renderFriend } from "@/app/(tabs)/explore";
+import { RenderFriend } from "@/app/(tabs)/explore";
 import Loader from "@/components/ui/Loader";
 import EmptyRecords from "@/components/ui/EmptyRecords";
 import Feather from "@expo/vector-icons/Feather";
@@ -46,7 +46,9 @@ const Search = () => {
         ) : (
           <FlatList
             data={data || []}
-            renderItem={renderFriend}
+            renderItem={({ item }) => (
+              <RenderFriend item={item} showFollowButton={false} />
+            )}
             keyExtractor={(item) => item.id.toString()}
             ListEmptyComponent={
               searchValue.length > 0 ? (

@@ -20,7 +20,7 @@ export default function StackLayout() {
           }}
         />
         <Stack.Screen
-          name="chat/new-chat"
+          name="chat/new-chat/[userId]"
           options={{
             title: "New Chat",
           }}

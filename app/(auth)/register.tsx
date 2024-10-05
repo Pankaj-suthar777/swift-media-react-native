@@ -33,7 +33,7 @@ const RegisterScreen = () => {
   const { setUserInfo, setIsLoggedIn } = useAuthStore();
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     try {
-      const { data } = await client.post("/auth/login", {
+      const { data } = await client.post("/auth/register", {
         ...values,
       });
 
@@ -43,6 +43,7 @@ const RegisterScreen = () => {
       setIsLoggedIn(true);
       router.replace("/(tabs)/");
     } catch (error: any) {
+      console.log(error);
       const errorMessage = error.response?.data?.detail;
       //   Toast.show({
       //     type: "error",

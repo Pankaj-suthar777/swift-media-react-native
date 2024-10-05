@@ -59,8 +59,9 @@ export default function ChatScreen() {
   }, [socket, chatId, queryClient]);
 
   useEffect(() => {
-    const getOnlineUserHandler = (usersIds: any) => {
-      const currentChatFriend = usersIds.find(
+    const getOnlineUserHandler = (usersIds: string[]) => {
+      if (!usersIds) return;
+      const currentChatFriend = usersIds?.find(
         (f: any) => parseInt(f) === chatUser?.id
       );
 
@@ -85,8 +86,8 @@ export default function ChatScreen() {
 
   useEffect(() => {
     if (chats && chatId.length > 0) {
-      const chat = chats.find((c) => c.id === parseInt(chatId as string));
-      const friend = chat?.friends.find((f) => f.id !== userInfo?.id);
+      const chat = chats?.find((c) => c.id === parseInt(chatId as string));
+      const friend = chat?.friends?.find((f) => f.id !== userInfo?.id);
       setChatUser({
         name: friend?.name,
         profile_image: friend?.avatar,

@@ -11,20 +11,54 @@ import {
   StyleSheet,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation, Link } from "expo-router";
+import { useNavigation, Link, router } from "expo-router";
 import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
-import { router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
+import { useFetchUser } from "@/hooks/query/userQuery";
+import { useChatStore } from "@/store/chatStore";
 
 export default function NewChatScreen() {
   const navigation = useNavigation();
+  const { userId } = useLocalSearchParams();
+  const { addChat } = useChatStore();
   const [inputMessage, setInputMessage] = useState("");
   const [chatUser, setChatUser] = useState<{
     name: string | undefined;
     profile_image: string | undefined;
     id: number | undefined;
-  }>();
+  }>({
+    id: parseInt(userId as string),
+    name: undefined,
+    profile_image: undefined,
+  });
 
-  const { mutate, data } = useSendMessageMutation(chatUser?.id as number);
+  const { mutate, data: sendMessageData } = useSendMessageMutation(
+    chatUser?.id as number
+  );
+
+  const { data: otherUserData } = useFetchUser(parseInt(userId as string));
+
+  useEffect(() => {
+    if (otherUserData?.user) {
+      setChatUser({
+        id: otherUserData?.user.id,
+        name: otherUserData.user.name,
+        profile_image: otherUserData.user.avatar,
+      });
+    }
+  }, [otherUserData]);
+
+  useEffect(() => {
+    if (sendMessageData?.chat) {
+      addChat(sendMessageData.chat);
+      router.replace({
+        pathname: "/(user)/chat/[chatId]",
+        params: {
+          chatId: sendMessageData.chat.id,
+        },
+      });
+    }
+  }, [sendMessageData?.chat]);
 
   function sendMessage() {
     if (inputMessage === "") {
@@ -32,13 +66,6 @@ export default function NewChatScreen() {
     }
 
     mutate({ text: inputMessage });
-
-    console.log("data.chat_id", data.chat_id);
-
-    // router.replace({
-    //   pathname: "/(user)/chat/[chatId]",
-    //   params: data.chat_id,
-    // });
 
     setInputMessage("");
   }
@@ -65,7 +92,7 @@ export default function NewChatScreen() {
               source={
                 chatUser?.profile_image
                   ? { uri: chatUser?.profile_image }
-                  : require("../../../assets/images/user-profile2.jpg")
+                  : require("../../../../assets/images/user-profile2.jpg")
               }
             />
             <View
@@ -94,8 +121,7 @@ export default function NewChatScreen() {
           <View style={{ marginTop: 6 }}>
             <View
               style={{
-                width: Dimensions.get("screen").width,
-                backgroundColor: "#3a6ee8",
+                backgroundColor: "#3a91e8",
                 marginHorizontal: 10,
                 padding: 10,
                 borderRadius: 8,
@@ -103,7 +129,7 @@ export default function NewChatScreen() {
             >
               <Text
                 style={{
-                  color: "black",
+                  color: "white",
                   fontSize: 16,
                 }}
               >
@@ -112,7 +138,14 @@ export default function NewChatScreen() {
             </View>
           </View>
         </TouchableWithoutFeedback>
-        <View style={{ paddingVertical: 10 }}>
+        <View
+          style={{
+            paddingVertical: 10,
+            position: "absolute",
+            width: "100%",
+            bottom: 10,
+          }}
+        >
           <View style={styles.messageInputView}>
             <TextInput
               value={inputMessage}
