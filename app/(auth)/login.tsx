@@ -22,7 +22,7 @@ const LoginScreen = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      email: "sss@gmail.com",
+      email: "qwert@gmail.com",
       password: "123456",
     },
     resolver: zodResolver(loginSchema),

@@ -7,7 +7,7 @@ import { useFetchOtherUserChatWithMe } from "@/hooks/query/chatQuery";
 import { useFetchIsFollow, useFetchUser } from "@/hooks/query/userQuery";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Pressable, RefreshControl } from "react-native";
+import { ImageBackground, Pressable, RefreshControl } from "react-native";
 import {
   Animated,
   Dimensions,
@@ -245,30 +245,39 @@ export default function ProfileScreen() {
             { transform: [{ translateY: translateHeader }] },
           ]}
         >
-          <Animated.View
-            style={[
-              styles.image,
-              {
-                transform: [
-                  { translateY: translateImageY },
-                  { translateX: translateImageX },
-                  { scale: scaleImage },
-                ],
-              },
-            ]}
+          <ImageBackground
+            className="h-full w-full object-cover justify-center items-center"
+            source={
+              data?.user.backgroundImage
+                ? { uri: data.user.backgroundImage }
+                : require("../../../assets/images/image3.avif")
+            }
           >
-            <Image
-              source={
-                data?.user?.avatar
-                  ? {
-                      uri: data?.user?.avatar,
-                    }
-                  : require("../../../assets/images/user-profile2.jpg")
-              }
-              style={styles.img}
-              resizeMode="cover"
-            />
-          </Animated.View>
+            <Animated.View
+              style={[
+                styles.image,
+                {
+                  transform: [
+                    { translateY: translateImageY },
+                    { translateX: translateImageX },
+                    { scale: scaleImage },
+                  ],
+                },
+              ]}
+            >
+              <Image
+                source={
+                  data?.user?.avatar
+                    ? {
+                        uri: data?.user?.avatar,
+                      }
+                    : require("../../../assets/images/user-profile2.jpg")
+                }
+                style={styles.img}
+                resizeMode="cover"
+              />
+            </Animated.View>
+          </ImageBackground>
           <Animated.Text
             onTextLayout={(e) => setTextWidth(e.nativeEvent.lines[0].width)}
             style={[
@@ -317,6 +326,8 @@ const styles = StyleSheet.create({
     borderRadius: headerHeight,
     backgroundColor: "#fff",
     overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "green",
   },
   img: {
     height: "100%",
