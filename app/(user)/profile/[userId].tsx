@@ -2,10 +2,11 @@ import AboutTab from "@/components/profile/AboutTab";
 import PostsTab from "@/components/profile/PostTab";
 import Button from "@/components/ui/Button";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
+import useFollowUserMutation from "@/hooks/mutation/useFollowUserMutation";
 import { useFetchOtherUserChatWithMe } from "@/hooks/query/chatQuery";
-import { useFetchUser } from "@/hooks/query/userQuery";
+import { useFetchIsFollow, useFetchUser } from "@/hooks/query/userQuery";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pressable, RefreshControl } from "react-native";
 import {
   Animated,
@@ -19,12 +20,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
-const headerHeight = 300;
+const headerHeight = 200;
 const headerFinalHeight = 70;
 const imageSize = (headerHeight / 3) * 2;
 
 export default function ProfileScreen() {
-  const [tab, setTab] = useState("posts");
   const scrollY = useRef(new Animated.Value(0)).current;
   const [textWidth, setTextWidth] = useState(0);
   const offset = headerHeight - headerFinalHeight;
@@ -63,18 +63,20 @@ export default function ProfileScreen() {
   });
 
   const opacityName = scrollY.interpolate({
-    inputRange: [0, offset], // Name will be fully hidden at the top and fully visible when scrolled down
-    outputRange: [0, 1], // Hidden at the top (0), visible when scrolled down
+    inputRange: [0, offset],
+    outputRange: [0, 1],
     extrapolate: "clamp",
   });
 
-  const { userId } = useLocalSearchParams();
+  const [isFollow, setIsFollow] = useState(false);
+  const [tab, setTab] = useState("posts");
   const [refreshing, setRefreshing] = useState(false);
+
+  const { userId } = useLocalSearchParams();
   const { data, isLoading } = useFetchUser(parseInt(userId as string));
 
   const onRefresh = () => {
     setRefreshing(true);
-    // Simulate a network request (e.g., fetching new data)
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -83,6 +85,24 @@ export default function ProfileScreen() {
   const { data: chatData } = useFetchOtherUserChatWithMe(
     parseInt(userId as string)
   );
+
+  const { data: isFollowData, isLoading: isFollowDataLoading } =
+    useFetchIsFollow(parseInt(userId as string));
+
+  useEffect(() => {
+    if (isFollowData === true || isFollowData === false) {
+      setIsFollow(isFollowData);
+    }
+  }, [isFollowData]);
+
+  const { mutate, isLoading: followToggleLoading } = useFollowUserMutation(
+    parseInt(userId as string)
+  );
+
+  const followToggleHandler = () => {
+    mutate();
+    setIsFollow(!isFollow);
+  };
 
   if (isLoading) {
     return (
@@ -111,7 +131,7 @@ export default function ProfileScreen() {
               <View>
                 <Text className="text-2xl font-bold">{data?.user?.name}</Text>
                 <Text className="text-base text-gray-500 mb-2">
-                  {data?.user?.name}
+                  {data?.user?.email}
                 </Text>
               </View>
             </View>
@@ -155,12 +175,20 @@ export default function ProfileScreen() {
 
             <View className="w-full flex-row items-center justify-between">
               <View className="flex-1 mr-2">
-                <Button variant="ghost">Follow</Button>
+                {isFollowDataLoading ? null : (
+                  <Button
+                    variant="outline"
+                    onPress={followToggleHandler}
+                    isLoading={followToggleLoading}
+                  >
+                    {isFollow ? "Unfollow" : "Follow"}
+                  </Button>
+                )}
               </View>
 
               <View className="flex-1">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onPress={() => {
                     if (chatData?.id) {
                       router.push({

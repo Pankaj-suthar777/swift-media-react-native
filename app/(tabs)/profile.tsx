@@ -124,7 +124,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
-const headerHeight = 300;
+const headerHeight = 200;
 const headerFinalHeight = 70;
 const imageSize = (headerHeight / 3) * 2;
 
@@ -283,9 +283,13 @@ export default function ProfileScreen() {
             ]}
           >
             <Image
-              source={{
-                uri: userInfo?.avatar,
-              }}
+              source={
+                userInfo?.avatar
+                  ? {
+                      uri: userInfo?.avatar,
+                    }
+                  : require("../../assets/images/user-profile2.jpg")
+              }
               style={styles.img}
               resizeMode="cover"
             />

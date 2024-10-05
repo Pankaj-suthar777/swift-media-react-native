@@ -106,7 +106,7 @@ export const RenderFriend = ({
           },
         }}
       >
-        <Pressable>
+        <Pressable className="justify-center">
           <Image
             source={
               item.avatar
@@ -133,14 +133,14 @@ export const RenderFriend = ({
           <Pressable>
             <Text style={styles.name}>{item.name}</Text>
             {plainText && (
-              <Text numberOfLines={2} ellipsizeMode="tail" style={styles.about}>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.about}>
                 {plainText}
               </Text>
             )}
           </Pressable>
         </Link>
         {showFollowButton && (
-          <Button variant="ghost">
+          <Button variant="outline">
             {item.isFollowing ? "Unfollow" : "Follow"}
           </Button>
         )}

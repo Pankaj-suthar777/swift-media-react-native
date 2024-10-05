@@ -18,7 +18,7 @@ const FollowersScreen = () => {
     return <LoaderFullScreen />;
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView className="mt-4">
       <View>
         <View className="flex-row items-center mb-4 px-4">
           <Pressable onPress={() => navigation.goBack()}>

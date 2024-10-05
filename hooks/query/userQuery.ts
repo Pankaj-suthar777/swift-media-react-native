@@ -102,3 +102,16 @@ export const useFetchUserFollowersList = (id: number) => {
     queryFn: () => fetchUserFollowersList(id),
   });
 };
+
+export const fetchIsFollow = async (id: number): Promise<boolean> => {
+  const client = await getClient();
+  const response = await client.get(`/user/is-follow/${id}`);
+  return response.data;
+};
+
+export const useFetchIsFollow = (id: number) => {
+  return useQuery({
+    queryKey: ["is-follow", id],
+    queryFn: () => fetchIsFollow(id),
+  });
+};
