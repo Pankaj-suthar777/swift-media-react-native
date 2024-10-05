@@ -68,7 +68,11 @@ export default function TabLayout() {
           name="chats"
           options={{
             headerShown: true,
-            title: "Chat",
+            title: "Chats",
+            headerTitleStyle: {
+              fontSize: 28,
+              fontWeight: "bold",
+            },
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 IconComponent={Ionicons}

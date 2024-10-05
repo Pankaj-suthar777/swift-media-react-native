@@ -45,7 +45,7 @@ const ChatsScreen = () => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={{ width: "100%", flex: 1 }}>
+      <View style={{ width: "100%", flex: 1, backgroundColor: "white" }}>
         {data.length === 0 && (
           <Text className="text-center mt-4">No chats available</Text>
         )}

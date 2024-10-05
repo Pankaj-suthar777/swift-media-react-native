@@ -33,6 +33,22 @@ export default function StackLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="following/[userId]"
+          options={{
+            presentation: "modal",
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="followers/[userId]"
+          options={{
+            presentation: "modal",
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </SocketContextProvider>
   );

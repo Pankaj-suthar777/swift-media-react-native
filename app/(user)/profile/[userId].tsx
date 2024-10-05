@@ -6,7 +6,7 @@ import { useFetchOtherUserChatWithMe } from "@/hooks/query/chatQuery";
 import { useFetchUser } from "@/hooks/query/userQuery";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useRef, useState } from "react";
-import { RefreshControl } from "react-native";
+import { Pressable, RefreshControl } from "react-native";
 import {
   Animated,
   Dimensions,
@@ -117,19 +117,39 @@ export default function ProfileScreen() {
             </View>
             <View className="w-full flex-row items-center justify-between">
               <View className="flex-row gap-4 items-center">
-                <View className="flex-row items-center text-base gap-x-2">
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(user)/followers/[userId]",
+                      params: {
+                        userId: parseInt(userId as string),
+                      },
+                    })
+                  }
+                  className="flex-row items-center text-base gap-x-2"
+                >
                   <Text className="font-bold text-slate-900 text-lg">
                     {data?.user?.followersCount}
                   </Text>
                   <Text className="text-gray-500">Followers</Text>
-                </View>
+                </Pressable>
 
-                <View className="flex-row items-center text-base gap-x-2">
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: "/(user)/following/[userId]",
+                      params: {
+                        userId: parseInt(userId as string),
+                      },
+                    })
+                  }
+                  className="flex-row items-center text-base gap-x-2"
+                >
                   <Text className="font-bold text-slate-900 text-lg">
                     {data?.user?.followingCount}
                   </Text>
                   <Text className="text-gray-500">Following</Text>
-                </View>
+                </Pressable>
               </View>
             </View>
 
@@ -187,7 +207,7 @@ export default function ProfileScreen() {
           {tab === "posts" ? (
             <PostsTab userId={parseInt(userId as string)} />
           ) : (
-            <AboutTab about={data?.user.about || ""} />
+            <AboutTab width={100} about={data?.user.about || ""} />
           )}
         </ScrollView>
         <Animated.View
