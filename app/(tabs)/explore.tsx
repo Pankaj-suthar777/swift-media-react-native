@@ -7,14 +7,12 @@ import {
   Image,
   FlatList,
   Pressable,
-  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
 import * as HTMLParser from "fast-html-parser";
 import Button from "@/components/ui/Button";
 import { Link, router } from "expo-router";
-import CustomTextInput from "@/components/ui/TextInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const ExploreScreen = () => {
@@ -49,7 +47,7 @@ const ExploreScreen = () => {
   );
 };
 
-const renderFriend = ({ item }: { item: People }) => {
+export const renderFriend = ({ item }: { item: People }) => {
   const plainText = item.about ? HTMLParser.parse(item.about).text : "";
   return (
     <View style={styles.card}>
@@ -95,9 +93,11 @@ const renderFriend = ({ item }: { item: People }) => {
             )}
           </Pressable>
         </Link>
-        <Button variant="ghost">
-          {item.isFollowing ? "Unfollow" : "Follow"}
-        </Button>
+        {item.isFollowing && (
+          <Button variant="ghost">
+            {item.isFollowing ? "Unfollow" : "Follow"}
+          </Button>
+        )}
       </View>
     </View>
   );

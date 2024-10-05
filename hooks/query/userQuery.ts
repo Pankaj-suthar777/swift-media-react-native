@@ -21,13 +21,12 @@ export const useFetchUser = (userId: number) => {
   });
 };
 
-import { useState, useEffect } from "react";
-
 interface FetchSearchUserResponse {
-  avatar?: string;
   email: string;
   id: number;
   name: string;
+  avatar: null | string;
+  about: null | string;
 }
 
 export const fetchSearchUser = async (
@@ -54,7 +53,7 @@ export interface People {
   email: string;
   avatar: null | string;
   about: null | string;
-  isFollowing: boolean;
+  isFollowing?: boolean;
 }
 
 export const fetchAllUser = async (): Promise<{ peoples: People[] }> => {
