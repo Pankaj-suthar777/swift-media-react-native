@@ -1,3 +1,4 @@
+import { People, useFetchAllUser } from "@/hooks/query/userQuery";
 import React from "react";
 import {
   View,
@@ -5,98 +6,100 @@ import {
   StyleSheet,
   Image,
   FlatList,
-  TouchableOpacity,
+  Pressable,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
+import * as HTMLParser from "fast-html-parser";
+import Button from "@/components/ui/Button";
+import { Link, router } from "expo-router";
+import CustomTextInput from "@/components/ui/TextInput";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-const friends = [
-  {
-    id: "1",
-    name: "John Parker",
-    country: "Canada",
-    age: "21-30 Years old",
-    rating: 3,
-    sports: ["Football", "Baseball", "Basketball", "Soccer"],
-    imageUrl: "https://bootdey.com/img/Content/avatar/avatar1.png",
-  },
-  {
-    id: "2",
-    name: "John Parker",
-    country: "Canada",
-    age: "21-30 Years old",
-    rating: 4,
-    sports: ["Football", "Baseball", "Basketball", "Soccer"],
-    imageUrl: "https://bootdey.com/img/Content/avatar/avatar2.png",
-  },
-  {
-    id: "3",
-    name: "John Parker",
-    country: "Canada",
-    age: "21-30 Years old",
-    rating: 3.5,
-    sports: ["Football", "Baseball", "Basketball", "Soccer"],
-    imageUrl: "https://bootdey.com/img/Content/avatar/avatar3.png",
-  },
-  {
-    id: "4",
-    name: "John Parker",
-    country: "Canada",
-    age: "21-30 Years old",
-    rating: 3.5,
-    sports: ["Football", "Baseball", "Basketball", "Soccer"],
-    imageUrl: "https://bootdey.com/img/Content/avatar/avatar4.png",
-  },
-  {
-    id: "5",
-    name: "John Parker",
-    country: "Canada",
-    age: "21-30 Years old",
-    rating: 3.5,
-    sports: ["Football", "Baseball", "Basketball", "Soccer"],
-    imageUrl: "https://bootdey.com/img/Content/avatar/avatar5.png",
-  },
-];
+const ExploreScreen = () => {
+  const { data, isLoading } = useFetchAllUser();
 
-const FriendListScreen = () => {
-  const renderFriend = ({ item }) => {
-    return (
-      <View style={styles.card}>
-        <Image source={{ uri: item.imageUrl }} style={styles.image} />
-        <View style={styles.info}>
-          {item.id !== "2" && (
-            <>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.details}>
-                {item.country} - {item.age}
-              </Text>
-            </>
-          )}
-
-          <View style={styles.ratingContainer}>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Text key={index} style={styles.star}>
-                {index < Math.floor(item.rating) ? "★" : "☆"}
-              </Text>
-            ))}
-          </View>
-          <Text style={styles.sports}>{item.sports.join(" | ")}</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Unfriend</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
+  if (isLoading || data === undefined) {
+    return <LoaderFullScreen />;
+  }
+  // <CustomTextInput placeholder="Search" />
   return (
     <SafeAreaView>
+      <Pressable
+        className="mx-4"
+        onPress={() => {
+          router.push("/(user)/search/search");
+        }}
+      >
+        <View className="flex-row items-center bg-gray-200 rounded-full p-2 mt-4">
+          <Ionicons name="search" size={20} color="gray" />
+          <View style={{ flex: 1 }} className="ml-2 text-base">
+            <Text>Search...</Text>
+          </View>
+        </View>
+      </Pressable>
       <FlatList
-        data={friends}
+        data={data?.peoples}
         renderItem={renderFriend}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.container}
       />
     </SafeAreaView>
+  );
+};
+
+const renderFriend = ({ item }: { item: People }) => {
+  const plainText = item.about ? HTMLParser.parse(item.about).text : "";
+  return (
+    <View style={styles.card}>
+      <Link
+        asChild
+        href={{
+          pathname: "/(user)/profile/[userId]",
+          params: {
+            userId: item?.id,
+          },
+        }}
+      >
+        <Pressable>
+          <Image
+            source={
+              item.avatar
+                ? {
+                    uri: item.avatar,
+                  }
+                : require("../../assets/images/user-profile2.jpg")
+            }
+            style={styles.image}
+          />
+        </Pressable>
+      </Link>
+
+      <View style={styles.info}>
+        <Link
+          asChild
+          href={{
+            pathname: "/(user)/profile/[userId]",
+            params: {
+              userId: item?.id,
+            },
+          }}
+        >
+          <Pressable>
+            <Text style={styles.name}>{item.name}</Text>
+            {plainText && (
+              <Text numberOfLines={2} ellipsizeMode="tail" style={styles.about}>
+                {plainText}
+              </Text>
+            )}
+          </Pressable>
+        </Link>
+        <Button variant="ghost">
+          {item.isFollowing ? "Unfollow" : "Follow"}
+        </Button>
+      </View>
+    </View>
   );
 };
 
@@ -157,6 +160,11 @@ const styles = StyleSheet.create({
     color: "#2ECC71",
     fontSize: 16,
   },
+  about: {
+    fontSize: 14,
+    color: "#888",
+    marginVertical: 5,
+  },
 });
 
-export default FriendListScreen;
+export default ExploreScreen;

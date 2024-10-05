@@ -19,6 +19,20 @@ export default function StackLayout() {
             title: "Profile",
           }}
         />
+        <Stack.Screen
+          name="chat/new-chat"
+          options={{
+            title: "New Chat",
+          }}
+        />
+        <Stack.Screen
+          name="search/search"
+          options={{
+            presentation: "modal",
+            animation: "slide_from_bottom",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </SocketContextProvider>
   );

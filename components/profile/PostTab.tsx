@@ -61,7 +61,11 @@ const PostsTab = ({ userId }: { userId: number }) => {
         data={data?.posts}
         renderItem={({ item }) => <Post post={item} />}
         onEndReached={handleOnEndReached}
-        ListEmptyComponent={<EmptyRecords title="No posts" />}
+        ListEmptyComponent={
+          <View className="mt-4">
+            <EmptyRecords title="No posts" />
+          </View>
+        }
         refreshing={isFetching}
         onRefresh={handleOnRefresh}
         isFetching={isFetchingMore}

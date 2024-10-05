@@ -183,9 +183,13 @@ export default function ProfileScreen() {
             ]}
           >
             <Image
-              source={{
-                uri: data?.user?.avatar,
-              }}
+              source={
+                data?.user?.avatar
+                  ? {
+                      uri: data?.user?.avatar,
+                    }
+                  : require("../../../assets/images/user-profile2.jpg")
+              }
               style={styles.img}
               resizeMode="cover"
             />
