@@ -21,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import Feather from "@expo/vector-icons/Feather";
 import Button from "@/components/ui/Button";
 import { uploadFilesToFirebaseAndGetUrl } from "@/utils/file-upload";
+import HtmlEditor from "@/utils/HtmlEditor";
 
 const editProfileSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
@@ -108,7 +109,6 @@ const EditScreen = () => {
   return (
     <SafeAreaView className="mt-4">
       <ScrollView>
-        {/* Header */}
         <View className="flex-row items-center mb-4 px-4">
           <Pressable onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={30} color="black" />
@@ -117,7 +117,6 @@ const EditScreen = () => {
             <Text className="text-lg font-bold">Edit Profile</Text>
           </View>
         </View>
-        {/* Background Image Section */}
         <ImageBackground
           source={
             backgroundImage
@@ -126,7 +125,6 @@ const EditScreen = () => {
           }
           className="w-full h-48 justify-center"
         >
-          {/* Profile Image Section */}
           <View className="items-center relative">
             <Image
               source={
@@ -135,7 +133,6 @@ const EditScreen = () => {
                   : require("../../assets/images/user-profile2.jpg")
               }
               style={styles.profileImage}
-              // resizeMode="cover"
             />
 
             <Pressable
@@ -153,7 +150,6 @@ const EditScreen = () => {
           </Pressable>
         </ImageBackground>
 
-        {/* Name Field */}
         <View className="mx-4 mt-4">
           <Controller
             control={control}
@@ -171,18 +167,11 @@ const EditScreen = () => {
           />
         </View>
 
-        {/* About Field (Rich Text Editor) */}
         <View className="mx-4 mt-4">
           <Text className="text-sm font-semibold mb-2">About</Text>
-          {/* <RichEditor
-            initialContentHTML={about}
-            onChange={(text) => setAbout(text)}
-            editorStyle={{ backgroundColor: "#fff" }}
-            placeholder="Write something about yourself"
-          /> */}
+          <HtmlEditor value={userInfo?.about} onChange={(e) => setAbout(e)} />
         </View>
 
-        {/* Submit Button */}
         <View className="mx-4 mt-8">
           <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
             Save

@@ -10,6 +10,8 @@ import {
   TouchableWithoutFeedback,
   Image,
   StyleSheet,
+  Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { useQueryClient } from "react-query";
 import moment from "moment";
@@ -20,6 +22,9 @@ import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
 import { useSocketContext } from "@/context/SocketContext";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import * as ImagePicker from "expo-image-picker";
+import { uploadFilesToFirebaseAndGetUrl } from "@/utils/file-upload";
 
 export default function ChatScreen() {
   const navigation = useNavigation();
@@ -35,8 +40,12 @@ export default function ChatScreen() {
     last_seen: string | undefined;
     id: number | undefined;
   }>();
+  const [imageUrl, setImageUrl] = useState("");
+  const [sendingImage, setSendingImage] = useState(false);
 
   const flatListRef = useRef<FlatList>(null);
+  const contentHeight = useRef(0);
+
   const { socket } = useSocketContext();
 
   useEffect(() => {
@@ -99,12 +108,22 @@ export default function ChatScreen() {
 
   const { mutate } = useSendMessageMutation(chatUser?.id as number);
 
-  function sendMessage() {
-    if (inputMessage === "" || !data) {
+  async function sendMessage() {
+    if ((inputMessage === "" && !imageUrl) || !data) {
       return setInputMessage("");
     }
 
-    mutate({ text: inputMessage });
+    let imageURL;
+
+    if (imageUrl) {
+      setSendingImage(true);
+      imageURL = await uploadFilesToFirebaseAndGetUrl(
+        imageUrl,
+        "chat-messages"
+      );
+    }
+
+    mutate({ text: inputMessage, imageUrl: imageURL });
 
     const newMessage = {
       text: inputMessage,
@@ -112,6 +131,7 @@ export default function ChatScreen() {
       chat_id: parseInt(chatId as string),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
+      imageUrl: imageURL,
     };
 
     queryClient.setQueryData(
@@ -120,13 +140,28 @@ export default function ChatScreen() {
         return [...(oldData || []), newMessage];
       }
     );
-
+    setSendingImage(false);
+    setImageUrl("");
     setInputMessage("");
   }
 
+  const handleBackgroundImageChange = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (result.assets && result.assets.length > 0) {
+      setImageUrl(result.assets[0].uri);
+    }
+  };
+
   useEffect(() => {
     if (flatListRef.current && data) {
-      flatListRef.current.scrollToEnd({ animated: true });
+      flatListRef.current.scrollToOffset({
+        offset: contentHeight.current + 80,
+        animated: true,
+      });
     }
   }, [data]);
 
@@ -188,7 +223,7 @@ export default function ChatScreen() {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
         <FlatList
-          ref={flatListRef} // Set reference to FlatList
+          ref={flatListRef}
           style={{ backgroundColor: "#f2f2ff" }}
           data={data}
           renderItem={({ item }) => {
@@ -208,14 +243,25 @@ export default function ChatScreen() {
                       borderBottomRightRadius: isOtherUser ? 8 : 0,
                     }}
                   >
-                    <Text
-                      style={{
-                        color: isOtherUser ? "black" : "#fff",
-                        fontSize: 16,
-                      }}
-                    >
-                      {item.text}
-                    </Text>
+                    {item.imageUrl ? (
+                      <View className="h-[300px] w-[300px]">
+                        <Image
+                          source={{ uri: item.imageUrl }}
+                          className="w-full h-full object-contain"
+                        />
+                      </View>
+                    ) : null}
+                    {item.text ? (
+                      <Text
+                        style={{
+                          color: isOtherUser ? "black" : "#fff",
+                          fontSize: 16,
+                        }}
+                      >
+                        {item.text}
+                      </Text>
+                    ) : null}
+
                     <Text
                       style={{
                         color: isOtherUser ? "black" : "#dfe4ea",
@@ -230,13 +276,56 @@ export default function ChatScreen() {
               </TouchableWithoutFeedback>
             );
           }}
-          onContentSizeChange={() =>
-            flatListRef.current?.scrollToEnd({ animated: true })
-          } // Auto scroll to bottom on content change
+          contentContainerStyle={{ paddingBottom: 80 }}
+          onContentSizeChange={(contentWidth, contentHeightValue) => {
+            contentHeight.current = contentHeightValue;
+            flatListRef.current?.scrollToOffset({
+              offset: contentHeightValue + 80,
+              animated: true,
+            });
+          }}
+          onLayout={() => {
+            flatListRef.current?.scrollToOffset({
+              offset: contentHeight.current + 80,
+              animated: true,
+            });
+          }}
         />
 
-        <View style={{ paddingVertical: 10 }}>
+        <View
+          style={{
+            paddingVertical: 10,
+            position: "absolute",
+            bottom: 4,
+            left: 0,
+            right: 0,
+          }}
+        >
+          {imageUrl && (
+            <View className="w-full  max-h-[500px] p-4 relative">
+              <Text className="p-2 bg-green-200 rounded-lg font-medium">
+                Send This Image
+              </Text>
+              <Pressable
+                className="absolute top-5 right-5 justify-center items-center"
+                onPress={() => setImageUrl("")}
+              >
+                <AntDesign name="closecircleo" size={24} />
+              </Pressable>
+              <Image
+                source={{ uri: imageUrl }}
+                className="w-full h-full object-contain"
+              />
+            </View>
+          )}
           <View style={styles.messageInputView}>
+            <TouchableOpacity
+              style={styles.messageSendView}
+              onPress={handleBackgroundImageChange}
+            >
+              <AntDesign name="plus" size={24} color="black" />
+            </TouchableOpacity>
+
             <TextInput
               value={inputMessage}
               style={styles.messageInput}
@@ -248,7 +337,11 @@ export default function ChatScreen() {
               style={styles.messageSendView}
               onPress={sendMessage}
             >
-              <Ionicons name="send" size={24} color="black" />
+              {sendingImage ? (
+                <ActivityIndicator />
+              ) : (
+                <Ionicons name="send" size={24} color="black" />
+              )}
             </TouchableOpacity>
           </View>
         </View>
