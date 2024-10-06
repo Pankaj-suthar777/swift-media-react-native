@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text } from "react-native";
+import { Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchPosts, useGetFeed } from "@/hooks/query/postQuery";
 import Post from "@/components/post/Post";
@@ -7,6 +7,12 @@ import PaginatedList from "@/components/ui/PaginatedList";
 import { useQueryClient } from "react-query";
 import EmptyRecords from "@/components/ui/EmptyRecords";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 let pageNo = 0;
 
@@ -47,13 +53,42 @@ const HomeScreen = () => {
     }
   };
 
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withTiming(1.2, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 100 });
+  };
+
   if (isLoading) {
     return <LoaderFullScreen />;
   }
 
   return (
-    <SafeAreaView className="bg-slate-50 flex-1">
+    <SafeAreaView className="bg-slate-50 flex-1 relative">
       <Text className="text-2xl px-4 font-bold py-4">Feed</Text>
+      <Animated.View
+        style={[animatedStyle]}
+        className={"absolute z-10 bottom-4 right-4"}
+      >
+        <Pressable
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          className="w-12 h-12 bg-blue-400 rounded-full justify-center items-center"
+        >
+          <FontAwesome5 name="feather" color="white" size={20} />
+        </Pressable>
+      </Animated.View>
+
       <PaginatedList
         data={data?.posts}
         renderItem={({ item }) => <Post post={item} />}

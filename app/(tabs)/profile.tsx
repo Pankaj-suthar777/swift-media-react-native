@@ -88,7 +88,11 @@ export default function ProfileScreen() {
                 </Text>
               </View>
               <View className="justify-center">
-                <Button variant="outline" containerClass="px-6">
+                <Button
+                  variant="outline"
+                  containerClass="px-6"
+                  onPress={() => router.push("/(user)/edit-profile")}
+                >
                   Edit Profile
                 </Button>
               </View>
@@ -169,7 +173,7 @@ export default function ProfileScreen() {
             source={
               userInfo?.backgroundImage
                 ? { uri: userInfo.backgroundImage }
-                : require("../../assets/images/image3.avif")
+                : require("../../assets/images/image3.jpg")
             }
           >
             <Animated.View

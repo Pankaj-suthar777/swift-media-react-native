@@ -248,7 +248,7 @@ export default function ProfileScreen() {
             source={
               data?.user.backgroundImage
                 ? { uri: data.user.backgroundImage }
-                : require("../../../assets/images/image3.avif")
+                : require("../../../assets/images/image3.jpg")
             }
           >
             <Animated.View

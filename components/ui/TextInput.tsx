@@ -76,7 +76,7 @@ const CustomTextInput = (props: Props) => {
 
   return (
     <Animated.View style={[inputStyles]} className="w-full">
-      {label && <ThemedText className="mb-2">{label}</ThemedText>}
+      {label && <ThemedText style={{ fontWeight: "bold" }}>{label}</ThemedText>}
       <View className="flex-row w-full justify-between items-center border border-gray-300 rounded-md p-2 my-2">
         <TextInput
           className="flex-1"
