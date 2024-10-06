@@ -30,6 +30,11 @@ const FollowingScreen = () => {
           </View>
         </View>
         <FlatList
+          ListEmptyComponent={
+            <View className="mt-8">
+              <Text className="text-center">No followers yet.</Text>
+            </View>
+          }
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
           data={data?.following}
           renderItem={({ item }) => <RenderFriend item={item} />}

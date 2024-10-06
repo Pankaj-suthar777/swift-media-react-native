@@ -79,7 +79,7 @@ export default function ProfileScreen() {
             { useNativeDriver: false }
           )}
         >
-          <View className="px-5">
+          <View className="px-5 mt-2">
             <View className="flex-row items-center justify-between">
               <View>
                 <Text className="text-2xl font-bold">{userInfo?.name}</Text>
@@ -166,9 +166,11 @@ export default function ProfileScreen() {
         >
           <ImageBackground
             className="h-full w-full object-cover justify-center items-center"
-            source={{
-              uri: "https://firebasestorage.googleapis.com/v0/b/mern-game-swift-rivals.appspot.com/o/backgroundImage%2F313-3136722_randy-orton-wwe-world-heavyweight-champion-hd-wallpapers.jpg?alt=media&token=1bd2e020-c587-42da-bcc6-83e115392432",
-            }}
+            source={
+              userInfo?.backgroundImage
+                ? { uri: userInfo.backgroundImage }
+                : require("../../assets/images/image3.avif")
+            }
           >
             <Animated.View
               style={[

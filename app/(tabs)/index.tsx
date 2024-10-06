@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchPosts, useGetFeed } from "@/hooks/query/postQuery";
-import LoadingAnimation from "@/components/LoadingAnimation";
 import Post from "@/components/post/Post";
 import PaginatedList from "@/components/ui/PaginatedList";
 import { useQueryClient } from "react-query";

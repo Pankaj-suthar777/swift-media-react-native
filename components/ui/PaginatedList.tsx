@@ -44,6 +44,7 @@ const PaginatedList = <T extends any>(props: Props<T>) => {
       data={data}
       ListEmptyComponent={ListEmptyComponent}
       renderItem={renderItem}
+      keyExtractor={(item: any) => item.id.toString()}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}

@@ -182,7 +182,7 @@ const SidePostActions = ({ post }: { post: IPost }) => {
                 author_id: userInfo?.id as number,
                 created_at: new Date(),
                 vote: v,
-                id: Math.floor(Math.random() * 10000),
+                id: Math.floor(Math.random() * 532),
                 post_id: post.id,
               });
               return { ...p, vote: filteredVote };
@@ -192,6 +192,33 @@ const SidePostActions = ({ post }: { post: IPost }) => {
         };
       }
     );
+    queryClient.setQueryData(
+      ["posts", post.authorId],
+      (oldData: { posts: IPost[] } | undefined) => {
+        if (!oldData || oldData.posts.length === 0) {
+          return { posts: [] };
+        }
+        return {
+          posts: oldData.posts.map((p) => {
+            if (p.id === post.id) {
+              const filteredVote = p.vote.filter(
+                (vote) => vote.author_id !== userInfo?.id
+              );
+              filteredVote.push({
+                author_id: userInfo?.id as number,
+                created_at: new Date(),
+                vote: v,
+                id: Math.floor(Math.random() * 273),
+                post_id: post.id,
+              });
+              return { ...p, vote: filteredVote };
+            }
+            return p;
+          }),
+        };
+      }
+    );
+    // queryClient.invalidateQueries(["posts", post.authorId]);
   };
 
   return (

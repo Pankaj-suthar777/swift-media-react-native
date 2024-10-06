@@ -1,23 +1,14 @@
 import { ScrollView, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import UserChat from "@/components/chat/UserChat";
-import { useGetMyChatsQuery } from "@/hooks/query/chatQuery";
 import { useAuthStore } from "@/store/authStore";
-import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
 import { useChatStore } from "@/store/chatStore";
 import { useSocketContext } from "@/context/SocketContext";
 
 const ChatsScreen = () => {
-  const { data, isLoading } = useGetMyChatsQuery();
   const { userInfo } = useAuthStore();
-  const { setChats } = useChatStore();
+  const { chats } = useChatStore();
   const [onlineUsersIds, setOnlineUsersIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (data && data?.length > 0) {
-      setChats(data);
-    }
-  }, [data]);
 
   const { socket } = useSocketContext();
 
@@ -34,10 +25,6 @@ const ChatsScreen = () => {
     };
   }, [socket]);
 
-  if (isLoading || data === undefined) {
-    return <LoaderFullScreen />;
-  }
-
   const isOnlineHandler = (id: number) => {
     const isOnline = onlineUsersIds.find((f) => parseInt(f) === id);
     return isOnline ? true : false;
@@ -46,10 +33,10 @@ const ChatsScreen = () => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ width: "100%", flex: 1, backgroundColor: "white" }}>
-        {data.length === 0 && (
+        {chats.length === 0 && (
           <Text className="text-center mt-4">No chats available</Text>
         )}
-        {data.map((item, index) => {
+        {chats.map((item, index) => {
           const friend = item.friends.find(
             (friend) => friend.id !== userInfo?.id
           );

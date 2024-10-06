@@ -70,16 +70,14 @@ export default function ProfileScreen() {
 
   const [isFollow, setIsFollow] = useState(false);
   const [tab, setTab] = useState("posts");
-  const [refreshing, setRefreshing] = useState(false);
 
   const { userId } = useLocalSearchParams();
-  const { data, isLoading } = useFetchUser(parseInt(userId as string));
+  const { data, isLoading, refetch, isFetching } = useFetchUser(
+    parseInt(userId as string)
+  );
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+  const onRefresh = async () => {
+    await refetch();
   };
 
   const { data: chatData } = useFetchOtherUserChatWithMe(
@@ -117,7 +115,7 @@ export default function ProfileScreen() {
       <View>
         <ScrollView
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={isFetching} onRefresh={onRefresh} />
           }
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
@@ -126,7 +124,7 @@ export default function ProfileScreen() {
             { useNativeDriver: false }
           )}
         >
-          <View className="px-5">
+          <View className="px-5 mt-2">
             <View className="flex-row items-center justify-between">
               <View>
                 <Text className="text-2xl font-bold">{data?.user?.name}</Text>
