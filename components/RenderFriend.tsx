@@ -25,19 +25,20 @@ const RenderFriend = ({
 }) => {
   const { userInfo } = useAuthStore();
   const plainText = item.about ? HTMLParser.parse(item.about).text : "";
+
   return (
     <View style={styles.card}>
       <Link
         asChild
         href={
-          userInfo?.id !== item.id
-            ? {
+          item.id === userInfo?.id
+            ? "/(tabs)/profile"
+            : {
                 pathname: "/(user)/profile/[userId]",
                 params: {
                   userId: item?.id,
                 },
               }
-            : "/(tabs)/profile"
         }
       >
         <Pressable className="justify-center">

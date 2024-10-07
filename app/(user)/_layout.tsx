@@ -50,6 +50,12 @@ export default function StackLayout() {
           }}
         />
         <Stack.Screen
+          name="post/[postId]"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="edit-profile"
           options={{
             presentation: "modal",

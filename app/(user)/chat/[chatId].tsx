@@ -266,7 +266,7 @@ export default function ChatScreen() {
                       backgroundColor: isOtherUser ? "white" : "#3a6ee8",
                       alignSelf: isOtherUser ? "flex-start" : "flex-end",
                       marginHorizontal: 10,
-                      padding: 10,
+                      padding: item.imageUrl ? 4 : 10,
                       borderRadius: 8,
                       borderBottomLeftRadius: isOtherUser ? 0 : 8,
                       borderBottomRightRadius: isOtherUser ? 8 : 0,
@@ -278,7 +278,12 @@ export default function ChatScreen() {
                       >
                         <Image
                           source={{ uri: item.imageUrl }}
-                          style={{ height: 300, width: 300 }}
+                          style={{
+                            height: 300,
+                            width: 300,
+                            borderRadius: 8,
+                            marginBottom: 8,
+                          }}
                         />
                       </Pressable>
                     )}

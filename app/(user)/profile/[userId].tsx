@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQueryClient } from "react-query";
 
 const { width } = Dimensions.get("window");
 const headerHeight = 200;
@@ -70,7 +71,7 @@ export default function ProfileScreen() {
 
   const [isFollow, setIsFollow] = useState(false);
   const [tab, setTab] = useState("posts");
-
+  const queryClient = useQueryClient();
   const { userId } = useLocalSearchParams();
   const { data, isLoading, refetch, isFetching } = useFetchUser(
     parseInt(userId as string)
@@ -78,6 +79,7 @@ export default function ProfileScreen() {
 
   const onRefresh = async () => {
     await refetch();
+    queryClient.invalidateQueries(["posts", userId]);
   };
 
   const { data: chatData } = useFetchOtherUserChatWithMe(

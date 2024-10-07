@@ -21,7 +21,7 @@ export interface ReplayToCommentVote {
   vote: VoteType;
   reply_to_comment_id: number;
   author_id: number;
-  author?: User;
+  author: User;
   reply_to_comment: ReplyToComment;
 }
 

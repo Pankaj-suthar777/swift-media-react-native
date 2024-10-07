@@ -1,4 +1,4 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import React from "react";
 import { useFetchUserFollowersList } from "@/hooks/query/userQuery";
 import { useLocalSearchParams, useNavigation } from "expo-router";
@@ -44,5 +44,3 @@ const FollowersScreen = () => {
 };
 
 export default FollowersScreen;
-
-const styles = StyleSheet.create({});

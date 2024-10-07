@@ -22,6 +22,8 @@ import Button from "../ui/Button";
 import { RichEditor, RichToolbar } from "react-native-pell-rich-editor";
 import * as ImagePicker from "expo-image-picker";
 import RadioGroup from "react-native-radio-buttons-group";
+import { useQueryClient } from "react-query";
+import { useAuthStore } from "@/store/authStore";
 
 interface Props {
   isOpen: boolean;
@@ -33,12 +35,15 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
   const [image, setImage] = useState("");
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [visibility, setVisibility] = useState("2");
+  const queryClient = useQueryClient();
+
+  const { userInfo } = useAuthStore();
 
   const { mutate, isLoading } = useCreatePostMutation();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const editor = useRef<RichEditor>(null);
 
-  const snapPoints = useMemo(() => ["80%"], []);
+  const snapPoints = useMemo(() => ["70%"], []);
 
   const handleSheetChanges = useCallback(
     (index: number) => {
@@ -59,6 +64,10 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
   }, [isOpen]);
 
   const onSubmit = async () => {
+    if (!text || !image) {
+      return;
+    }
+
     let visibilityValue;
     visibility === "1"
       ? (visibilityValue = "PUBLIC")
@@ -71,8 +80,8 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
         const imageUrl = await uploadFilesToFirebaseAndGetUrl(image, "posts");
         body.image = imageUrl;
       }
-
       mutate(body);
+      queryClient.invalidateQueries(["posts", userInfo?.id]);
     } catch (error: any) {
       console.log(error);
     } finally {
@@ -101,7 +110,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
       },
       {
         id: "2",
-        label: "ONLY_FOLLOWING",
+        label: "ONLY FOLLOWING",
         value: "ONLY_FOLLOWING",
       },
     ],
@@ -120,6 +129,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
       <BottomSheetView style={styles.contentContainer}>
         <ScrollView>
           <View style={styles.header}>
+            <Text style={styles.headerTitle}>Create Post</Text>
             <TouchableOpacity
               onPress={() => {
                 setIsOpen(false);
@@ -132,11 +142,7 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
             </TouchableOpacity>
           </View>
           <View>
-            <Text style={styles.headerTitle} className="text-center">
-              Create Post
-            </Text>
             <View style={styles.editorContainer}>
-              <Text className="text-sm font-semibold mb-2">Text</Text>
               <RichEditor
                 initialContentHTML={text}
                 onChange={(e) => setText(e)}
@@ -166,6 +172,11 @@ const CreatePostModal = ({ isOpen, setIsOpen }: Props) => {
               </Pressable>
               <View className="h-[90px] py-4 items-start">
                 <RadioGroup
+                  containerStyle={{
+                    justifyContent: "flex-start",
+                    alignItems: "flex-start",
+                    flex: 1,
+                  }}
                   radioButtons={radioButtons}
                   onPress={(e: any) => setVisibility(e)}
                   selectedId={visibility}
@@ -205,7 +216,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
   },
@@ -213,7 +224,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
-    textAlign: "center",
   },
   editorContainer: {
     flex: 1,

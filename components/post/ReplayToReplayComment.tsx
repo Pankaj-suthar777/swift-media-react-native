@@ -1,0 +1,67 @@
+import { ReplayToReplayComment as IReplayToReplayComment } from "@/@types/ReplyToReply";
+import { AntDesign } from "@expo/vector-icons";
+import moment from "moment";
+import React, { useState } from "react";
+import { View, Text, Image, Pressable } from "react-native";
+
+const ReplayToReplayComment = ({
+  comment,
+}: {
+  comment: IReplayToReplayComment;
+}) => {
+  return (
+    <View className="my-2 ml-2 border-l-2 border-gray-300 pl-2">
+      <View className="flex-row gap-2 items-center">
+        <View className="h-8 w-8">
+          <Image
+            className="h-full w-full rounded-full"
+            source={
+              comment.author?.avatar
+                ? { uri: comment.author.avatar }
+                : require("../../assets/images/user-profile2.jpg")
+            }
+          />
+        </View>
+        <Text className="text-md font-semibold text-slate-600">
+          {comment.author.name}
+        </Text>
+        <Text className="text-xs text-slate-500 pl-2">
+          {moment(comment.created_at).startOf("hour").fromNow()}
+        </Text>
+      </View>
+      <View>
+        <Text className="mt-1 text-sm text-gray-800">{comment.text}</Text>
+        <View className="flex-row justify-end items-center">
+          <View className="flex-row items-center">
+            <View className="flex-row items-center mx-3">
+              <Pressable className="rounded-full border p-1 border-slate-500">
+                <AntDesign name="arrowup" size={16} color={"black"} />
+              </Pressable>
+              <Text className="ml-3">
+                {
+                  comment?.replayToReplyCommentVote?.filter(
+                    (v) => v.vote === "up-vote"
+                  ).length
+                }
+              </Text>
+            </View>
+            <View className="flex-row items-center">
+              <Pressable className="rounded-full border p-1 border-slate-500">
+                <AntDesign name="arrowdown" size={16} color={"black"} />
+              </Pressable>
+              <Text className="ml-2">
+                {
+                  comment?.replayToReplyCommentVote?.filter(
+                    (v) => v.vote === "down-vote"
+                  ).length
+                }
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default ReplayToReplayComment;

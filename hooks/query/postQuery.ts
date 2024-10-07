@@ -1,3 +1,4 @@
+import { Comment } from "@/@types/comment";
 import { Post } from "@/@types/post";
 import { getClient } from "@/api/client";
 import { useQuery } from "react-query";
@@ -34,5 +35,33 @@ export const useFetchUserPosts = (authorId: number, page: number) => {
   return useQuery({
     queryKey: ["posts", authorId],
     queryFn: () => fetchUserPosts(authorId, page),
+  });
+};
+
+export const fetchSinglePost = async (id: number) => {
+  const client = await getClient();
+  const response = await client.get<{ post: Post }>(`/post/${id}`);
+  return response.data;
+};
+
+export const useFetchSinglePost = (id: number) => {
+  return useQuery({
+    queryKey: ["posts", id],
+    queryFn: () => fetchSinglePost(id),
+  });
+};
+
+export const fetchSinglePostComment = async (id: number) => {
+  const client = await getClient();
+  const response = await client.get<{ comments: Comment[] }>(
+    `/post/comment/${id}`
+  );
+  return response.data;
+};
+
+export const useFetchSinglePostComment = (id: number) => {
+  return useQuery({
+    queryKey: ["post-comment", id],
+    queryFn: () => fetchSinglePostComment(id),
   });
 };

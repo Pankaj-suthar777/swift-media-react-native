@@ -1,10 +1,4 @@
-import {
-  FlatList,
-  FlatListProps,
-  Text,
-  RefreshControl,
-  View,
-} from "react-native";
+import { FlatList, FlatListProps, RefreshControl, View } from "react-native";
 import PulseAnimationContainer from "./PulseAnimationContainer";
 import Loader from "./Loader";
 

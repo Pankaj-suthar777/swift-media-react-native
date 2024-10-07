@@ -26,14 +26,8 @@ const PostsTab = ({ userId }: { userId: number }) => {
     );
   }
 
-  const handleOnRefresh = () => {
-    pageNo = 0;
-    setHasMore(true);
-    queryClient.invalidateQueries(["posts"]);
-  };
-
   const handleOnEndReached = async () => {
-    if (!data || !hasMore || isFetchingMore) return;
+    if (!data || !hasMore) return;
 
     setIsFetchingMore(true);
     try {
@@ -67,7 +61,6 @@ const PostsTab = ({ userId }: { userId: number }) => {
           </View>
         }
         refreshing={isFetching}
-        onRefresh={handleOnRefresh}
         isFetching={isFetchingMore}
         hasMore={hasMore}
       />
