@@ -1,6 +1,8 @@
 import { User } from "./user";
 import { VoteType } from "./vote";
 
+export type VISIBLITY = "ONLY_FOLLOWING" | "PUBLIC";
+
 export interface Post {
   id: number;
   text: string;
@@ -11,7 +13,7 @@ export interface Post {
   authorId: number;
   vote: Vote[];
   savedPost: SavedPost[];
-  visibility: "ONLY_FOLLOWING" | "PUBLIC";
+  visibility: VISIBLITY;
 }
 
 export interface Vote {

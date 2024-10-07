@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { useQueryClient } from "react-query";
 import moment from "moment";
@@ -42,6 +43,8 @@ export default function ChatScreen() {
   }>();
   const [imageUrl, setImageUrl] = useState("");
   const [sendingImage, setSendingImage] = useState(false);
+  const [isImagePreviewVisible, setIsImagePreviewVisible] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState("");
 
   const flatListRef = useRef<FlatList>(null);
   const contentHeight = useRef(0);
@@ -219,9 +222,35 @@ export default function ChatScreen() {
     });
   }, [chatUser]);
 
+  const handleImagePress = (imageUrl: string) => {
+    setPreviewImageUrl(imageUrl);
+    setIsImagePreviewVisible(true);
+  };
+
+  const closeImagePreview = () => {
+    setPreviewImageUrl("");
+    setIsImagePreviewVisible(false);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
+        <Modal
+          visible={isImagePreviewVisible}
+          transparent={true}
+          animationType="fade"
+        >
+          <View style={styles.previewContainer}>
+            <Pressable style={styles.closeButton} onPress={closeImagePreview}>
+              <AntDesign name="close" size={30} color="#fff" />
+            </Pressable>
+            <Image
+              source={{ uri: previewImageUrl }}
+              style={styles.previewImage}
+              resizeMode="contain"
+            />
+          </View>
+        </Modal>
         <FlatList
           ref={flatListRef}
           style={{ backgroundColor: "#f2f2ff" }}
@@ -243,14 +272,17 @@ export default function ChatScreen() {
                       borderBottomRightRadius: isOtherUser ? 8 : 0,
                     }}
                   >
-                    {item.imageUrl ? (
-                      <View className="h-[300px] w-[300px]">
+                    {item.imageUrl && (
+                      <Pressable
+                        onPress={() => handleImagePress(item.imageUrl)}
+                      >
                         <Image
                           source={{ uri: item.imageUrl }}
-                          className="w-full h-full object-contain"
+                          style={{ height: 300, width: 300 }}
                         />
-                      </View>
-                    ) : null}
+                      </Pressable>
+                    )}
+
                     {item.text ? (
                       <Text
                         style={{
@@ -381,5 +413,20 @@ const styles = StyleSheet.create({
   messageSendView: {
     paddingHorizontal: 10,
     justifyContent: "center",
+  },
+  previewContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+  },
+  previewImage: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height / 1.5,
   },
 });

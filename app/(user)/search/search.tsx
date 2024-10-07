@@ -5,10 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CustomTextInput from "@/components/ui/TextInput";
 import { useNavigation } from "expo-router";
-import { RenderFriend } from "@/app/(tabs)/explore";
 import Loader from "@/components/ui/Loader";
 import EmptyRecords from "@/components/ui/EmptyRecords";
 import Feather from "@expo/vector-icons/Feather";
+import RenderFriend from "@/components/RenderFriend";
 
 const Search = () => {
   const [searchValue, setSerachValue] = useState("");

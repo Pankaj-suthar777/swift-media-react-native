@@ -14,6 +14,8 @@ import * as HTMLParser from "fast-html-parser";
 import Button from "@/components/ui/Button";
 import { Link, router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useAuthStore } from "@/store/authStore";
+import RenderFriend from "@/components/RenderFriend";
 
 const ExploreScreen = () => {
   const { data, isLoading } = useFetchAllUser();
@@ -39,8 +41,8 @@ const ExploreScreen = () => {
       </Pressable>
 
       <FlatList
-        data={data?.peoples}
-        renderItem={RenderFriend}
+        data={data?.peoples || []}
+        renderItem={({ item }) => <RenderFriend item={item} />}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.container}
       />
@@ -50,11 +52,11 @@ const ExploreScreen = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1, // Ensure it takes up full height, so the padding applies correctly
+    flex: 1,
   },
   container: {
     padding: 10,
-    paddingBottom: 80, // Add padding to avoid content being cut off by tab bar
+    paddingBottom: 80,
   },
   card: {
     flexDirection: "row",
@@ -86,65 +88,3 @@ const styles = StyleSheet.create({
 });
 
 export default ExploreScreen;
-
-export const RenderFriend = ({
-  item,
-  showFollowButton = true,
-}: {
-  item: People;
-  showFollowButton?: boolean;
-}) => {
-  const plainText = item.about ? HTMLParser.parse(item.about).text : "";
-  return (
-    <View style={styles.card}>
-      <Link
-        asChild
-        href={{
-          pathname: "/(user)/profile/[userId]",
-          params: {
-            userId: item?.id,
-          },
-        }}
-      >
-        <Pressable className="justify-center">
-          <Image
-            source={
-              item.avatar
-                ? {
-                    uri: item.avatar,
-                  }
-                : require("../../assets/images/user-profile2.jpg")
-            }
-            style={styles.image}
-          />
-        </Pressable>
-      </Link>
-
-      <View style={styles.info}>
-        <Link
-          asChild
-          href={{
-            pathname: "/(user)/profile/[userId]",
-            params: {
-              userId: item?.id,
-            },
-          }}
-        >
-          <Pressable>
-            <Text style={styles.name}>{item.name}</Text>
-            {plainText && (
-              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.about}>
-                {plainText}
-              </Text>
-            )}
-          </Pressable>
-        </Link>
-        {showFollowButton && (
-          <Button variant="outline">
-            {item.isFollowing ? "Unfollow" : "Follow"}
-          </Button>
-        )}
-      </View>
-    </View>
-  );
-};

@@ -3,9 +3,9 @@ import React from "react";
 import { useFetchUserFollowersList } from "@/hooks/query/userQuery";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
-import { RenderFriend } from "@/app/(tabs)/explore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import RenderFriend from "@/components/RenderFriend";
 
 const FollowersScreen = () => {
   const { userId } = useLocalSearchParams();

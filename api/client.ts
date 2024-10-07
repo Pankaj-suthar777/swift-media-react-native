@@ -1,4 +1,4 @@
-const baseURL = "http://192.168.250.227:5000/api";
+const baseURL = "http://192.168.72.227:5000/api";
 
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";
 import axios, { CreateAxiosDefaults } from "axios";

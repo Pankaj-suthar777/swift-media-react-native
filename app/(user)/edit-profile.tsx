@@ -169,7 +169,10 @@ const EditScreen = () => {
 
         <View className="mx-4 mt-4">
           <Text className="text-sm font-semibold mb-2">About</Text>
-          <HtmlEditor value={userInfo?.about} onChange={(e) => setAbout(e)} />
+          <HtmlEditor
+            value={userInfo?.about}
+            onChange={(e) => (e ? setAbout(e) : null)}
+          />
         </View>
 
         <View className="mx-4 mt-8">
