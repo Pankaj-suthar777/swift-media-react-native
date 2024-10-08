@@ -26,6 +26,6 @@ export const useReplayModalStore = create<Store>()((set) => ({
   Modaltype: undefined,
   isModalOpen: false,
   setModal: ({ open, type, comment }) =>
-    set(() => ({ type: type, isModalOpen: open, comment })),
+    set(() => ({ Modaltype: type, isModalOpen: open, comment })),
   closeModal: () => set(() => ({ type: undefined, isModalOpen: false })),
 }));

@@ -66,7 +66,7 @@ const ReplayComment = ({ comment }: { comment: ReplyToComment }) => {
               onPress={() =>
                 setModal({
                   open: true,
-                  type: "replayToComment",
+                  type: "replayToReplayComment",
                   comment: comment,
                 })
               }

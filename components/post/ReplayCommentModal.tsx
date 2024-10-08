@@ -18,20 +18,17 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { AntDesign } from "@expo/vector-icons";
 import Button from "../ui/Button";
 import { useQueryClient } from "react-query";
-import { useAuthStore } from "@/store/authStore";
 import { useReplayModalStore } from "@/store/replayModalStore";
 import moment from "moment";
+import useAddReplayCommentMutation from "@/hooks/mutation/useAddReplayCommentMutation";
+import useAddReplayToReplyMutation from "@/hooks/mutation/useAddReplayToReplyMutation";
 
 const ReplayCommentModal = () => {
   const [text, setText] = useState("");
   const { isModalOpen, closeModal, Modaltype, comment } = useReplayModalStore();
 
   const queryClient = useQueryClient();
-
-  const { userInfo } = useAuthStore();
-
   const bottomSheetRef = useRef<BottomSheet>(null);
-
   const snapPoints = useMemo(() => ["70%"], []);
 
   const handleSheetChanges = useCallback(
@@ -52,12 +49,39 @@ const ReplayCommentModal = () => {
     }
   }, [isModalOpen]);
 
+  const {
+    mutate: addReplayToComment,
+    isLoading: isReplayToCommentLoading,
+    isSuccess: isReplayToCommentSuccess,
+  } = useAddReplayCommentMutation(comment?.id as number);
+  const {
+    mutate: addReplayToReplay,
+    isLoading: isReplayToReplayLoading,
+    isSuccess: isReplayToReplaySuccess,
+  } = useAddReplayToReplyMutation();
+
   const onSubmit = async () => {
     if (!text) return;
+
+    if (Modaltype === "replayToComment") {
+      addReplayToComment({ text });
+    } else if (Modaltype === "replayToReplayComment") {
+      addReplayToReplay({
+        text,
+        replayToAuthorId: comment?.author_id as number,
+        replayToCommentId: comment?.id as number,
+      });
+    }
 
     // mutate({ text });
     // queryClient.invalidateQueries(["posts", userInfo?.id]);
   };
+
+  useEffect(() => {
+    if (isReplayToReplaySuccess || isReplayToCommentSuccess) {
+      setText("");
+    }
+  }, [isReplayToReplaySuccess, isReplayToCommentSuccess]);
 
   return (
     <BottomSheet
@@ -119,6 +143,11 @@ const ReplayCommentModal = () => {
                 variant="ghost"
                 containerClass="h-[40px] justify-center"
                 onPress={onSubmit}
+                isLoading={
+                  Modaltype === "replayToComment"
+                    ? isReplayToCommentLoading
+                    : isReplayToReplayLoading
+                }
               >
                 Post
               </Button>
