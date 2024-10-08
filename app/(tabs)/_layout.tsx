@@ -10,7 +10,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { useGetMyChatsQuery } from "@/hooks/query/chatQuery";
 import { useChatStore } from "@/store/chatStore";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // import useCheckTokenValidity from "@/hooks/useCheckTokenValidity";
 
@@ -49,62 +48,60 @@ export default function TabLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <SocketContextProvider>
-        <Tabs
-          screenOptions={{
-            tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-            headerShown: false,
+    <SocketContextProvider>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          headerShown: false,
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Home",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={"home"} color={color} />
+            ),
           }}
-        >
-          <Tabs.Screen
-            name="index"
-            options={{
-              title: "Home",
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={"home"} color={color} />
-              ),
-            }}
-          />
+        />
 
-          <Tabs.Screen
-            name="explore"
-            options={{
-              title: "Explore",
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={"search1"} color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="chats"
-            options={{
-              headerShown: true,
-              title: "Chats",
-              headerTitleStyle: {
-                fontSize: 28,
-                fontWeight: "bold",
-              },
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon
-                  IconComponent={Ionicons}
-                  name={"chatbubble-outline"}
-                  color={color}
-                />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="profile"
-            options={{
-              title: "Profile",
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={"user"} color={color} />
-              ),
-            }}
-          />
-        </Tabs>
-      </SocketContextProvider>
-    </GestureHandlerRootView>
+        <Tabs.Screen
+          name="explore"
+          options={{
+            title: "Explore",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={"search1"} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="chats"
+          options={{
+            headerShown: true,
+            title: "Chats",
+            headerTitleStyle: {
+              fontSize: 28,
+              fontWeight: "bold",
+            },
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                IconComponent={Ionicons}
+                name={"chatbubble-outline"}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={"user"} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
+    </SocketContextProvider>
   );
 }
