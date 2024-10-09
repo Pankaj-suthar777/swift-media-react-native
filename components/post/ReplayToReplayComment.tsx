@@ -1,4 +1,6 @@
 import { ReplayToReplayComment as IReplayToReplayComment } from "@/@types/ReplyToReply";
+import { VoteType } from "@/@types/vote";
+import useToogleReplayoReplyCommentVoteMutation from "@/hooks/mutation/useToogleReplayoReplyCommentVoteMutation";
 import { useAuthStore } from "@/store/authStore";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -12,6 +14,18 @@ const ReplayToReplayComment = ({
   comment: IReplayToReplayComment;
 }) => {
   const { userInfo } = useAuthStore();
+
+  const { mutate } = useToogleReplayoReplyCommentVoteMutation(comment.id);
+
+  const voteHandler = (vote: VoteType) => {
+    mutate({
+      vote,
+    });
+  };
+
+  const vote = comment?.replayToReplyCommentVote?.find(
+    (vote) => vote.author_id === userInfo?.id
+  );
   return (
     <View className="my-2 ml-2 border-l-2 border-gray-300 pl-2">
       <View className="flex-row gap-2 items-center">
@@ -63,7 +77,12 @@ const ReplayToReplayComment = ({
         <View className="flex-row justify-end items-center">
           <View className="flex-row items-center">
             <View className="flex-row items-center mx-3">
-              <Pressable className="rounded-full border p-1 border-slate-500">
+              <Pressable
+                className={`rounded-full border p-1 border-slate-500 ${
+                  vote?.vote === "up-vote" ? "bg-green-200" : ""
+                }`}
+                onPress={() => voteHandler("up-vote")}
+              >
                 <AntDesign name="arrowup" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-3">
@@ -75,7 +94,12 @@ const ReplayToReplayComment = ({
               </Text>
             </View>
             <View className="flex-row items-center">
-              <Pressable className="rounded-full border p-1 border-slate-500">
+              <Pressable
+                className={`rounded-full border p-1 border-slate-500 ${
+                  vote?.vote === "down-vote" ? "bg-red-200" : ""
+                }`}
+                onPress={() => voteHandler("down-vote")}
+              >
                 <AntDesign name="arrowdown" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-2">

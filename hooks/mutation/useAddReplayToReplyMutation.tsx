@@ -1,3 +1,4 @@
+import { ReplayToReplayComment } from "@/@types/ReplyToReply";
 import { getClient } from "@/api/client";
 import { useMutation } from "react-query";
 
@@ -9,7 +10,9 @@ const useAddReplayToReplyMutation = () => {
       replayToCommentId: number;
     }) => {
       const client = await getClient();
-      const response = await client.post("/post/add-replay-to-replay", body);
+      const response = await client.post<{
+        replayToReplayComment: ReplayToReplayComment;
+      }>("/post/add-replay-to-replay", body);
       return response?.data;
     }
   );

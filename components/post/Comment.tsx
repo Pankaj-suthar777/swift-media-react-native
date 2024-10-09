@@ -1,16 +1,35 @@
 import { Comment as IComment } from "@/@types/comment";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, Pressable } from "react-native";
 import ReplayComment from "./ReplayComment";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReplayModalStore } from "@/store/replayModalStore";
 import { useAuthStore } from "@/store/authStore";
 import { router } from "expo-router";
+import useToogleCommentVoteMutation from "@/hooks/mutation/useToogleCommentVoteMutation";
+import { VoteType } from "@/@types/vote";
+import { useQueryClient } from "react-query";
 
 const Comment = ({ comment }: { comment: IComment }) => {
   const { setModal } = useReplayModalStore();
   const { userInfo } = useAuthStore();
+  const { mutate, isSuccess } = useToogleCommentVoteMutation(comment.id);
+  const queryClient = useQueryClient();
+  const voteHandler = (vote: VoteType) => {
+    mutate({
+      vote,
+    });
+  };
+
+  const vote = comment?.vote.find((vote) => vote.author_id === userInfo?.id);
+
+  useEffect(() => {
+    if (isSuccess) {
+      queryClient.setQueryData(["post-comment", comment.id], (oldData) => {});
+    }
+  }, [isSuccess]);
+
   return (
     <View className="my-2 ml-2 border-l-2 border-gray-300 pl-2">
       <View className="flex-row gap-2 items-center">
@@ -81,7 +100,12 @@ const Comment = ({ comment }: { comment: IComment }) => {
               </Text>
             </TouchableOpacity>
             <View className="flex-row items-center mx-3">
-              <Pressable className="rounded-full border p-1 border-slate-500">
+              <Pressable
+                className={`rounded-full border p-1 border-slate-500 ${
+                  vote?.vote === "up-vote" ? "bg-green-200" : ""
+                }`}
+                onPress={() => voteHandler("up-vote")}
+              >
                 <AntDesign name="arrowup" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-3">
@@ -89,7 +113,12 @@ const Comment = ({ comment }: { comment: IComment }) => {
               </Text>
             </View>
             <View className="flex-row items-center">
-              <Pressable className="rounded-full border p-1 border-slate-500">
+              <Pressable
+                className={`rounded-full border p-1 border-slate-500 ${
+                  vote?.vote === "down-vote" ? "bg-red-200" : ""
+                }`}
+                onPress={() => voteHandler("down-vote")}
+              >
                 <AntDesign name="arrowdown" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-2">
