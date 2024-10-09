@@ -42,7 +42,7 @@ const Comment = ({ comment }: { comment: IComment }) => {
         );
 
         if (votedCommentIndex === -1) {
-          return oldData; // Return old data if the comment isn't found
+          return oldData;
         }
 
         const votedComment = oldData.comments[votedCommentIndex];
@@ -67,13 +67,11 @@ const Comment = ({ comment }: { comment: IComment }) => {
           myVote,
         ];
 
-        // Create a modified comment
         const modifiedComment: IComment = {
           ...votedComment,
           vote: newCommentsVotes,
         };
 
-        // Return new comments array with the modified comment at the correct index
         const updatedComments = [...oldData.comments];
         updatedComments[votedCommentIndex] = modifiedComment;
 

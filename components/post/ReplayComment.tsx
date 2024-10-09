@@ -1,6 +1,6 @@
 import { ReplyToComment } from "@/@types/replayToComment";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, Image, Pressable } from "react-native";
 import ReplayToReplayComment from "./ReplayToReplayComment";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,20 +8,55 @@ import { useReplayModalStore } from "@/store/replayModalStore";
 import { router } from "expo-router";
 import { useAuthStore } from "@/store/authStore";
 import useToogleReplayCommentVoteMutation from "@/hooks/mutation/useToogleReplayCommentVoteMutation";
-import { VoteType } from "@/@types/vote";
+import { ReplayToCommentVote, VoteType } from "@/@types/vote";
 
 const ReplayComment = ({ comment }: { comment: ReplyToComment }) => {
+  const [myVote, setMyVote] = useState<ReplayToCommentVote | undefined>();
+  const [commentData, setCommentData] = useState<ReplyToComment>(comment);
+
+  useEffect(() => {
+    if (comment) {
+      const initialMyVote = comment.vote.find(
+        (vote) => vote.author_id === userInfo?.id
+      );
+      setMyVote(initialMyVote);
+    }
+  }, [comment]);
+
   const { setModal } = useReplayModalStore();
   const { userInfo } = useAuthStore();
   const { mutate } = useToogleReplayCommentVoteMutation(comment.id);
 
   const voteHandler = (vote: VoteType) => {
-    mutate({
-      vote,
-    });
-  };
+    mutate({ vote });
 
-  const vote = comment?.vote?.find((vote) => vote.author_id === userInfo?.id);
+    const filteredVoteArray = comment.vote.filter(
+      (v) => v.author_id !== userInfo?.id
+    );
+
+    const myVote: ReplayToCommentVote = {
+      author: userInfo!,
+      author_id: userInfo?.id as number,
+      created_at: new Date(),
+      id: Math.floor(1000 * Math.random() + 10),
+      reply_to_comment: comment,
+      reply_to_comment_id: comment.id,
+      vote,
+    };
+    setMyVote(myVote);
+
+    const modifiedVoteArray: ReplayToCommentVote[] = [
+      ...filteredVoteArray,
+      myVote,
+    ];
+
+    const modifiedComment: ReplyToComment = {
+      ...comment,
+      vote: modifiedVoteArray,
+    };
+
+    setCommentData(modifiedComment);
+  };
 
   return (
     <View className="my-2 ml-2 border-l-2 border-gray-300 pl-2">
@@ -95,27 +130,30 @@ const ReplayComment = ({ comment }: { comment: ReplyToComment }) => {
             <View className="flex-row items-center mx-3">
               <Pressable
                 className={`rounded-full border p-1 border-slate-500 ${
-                  vote?.vote === "up-vote" ? "bg-green-200" : ""
+                  myVote?.vote === "up-vote" ? "bg-green-200" : ""
                 }`}
                 onPress={() => voteHandler("up-vote")}
               >
                 <AntDesign name="arrowup" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-3">
-                {comment?.vote?.filter((v) => v.vote === "up-vote").length}
+                {commentData?.vote?.filter((v) => v.vote === "up-vote").length}
               </Text>
             </View>
             <View className="flex-row items-center">
               <Pressable
                 className={`rounded-full border p-1 border-slate-500 ${
-                  vote?.vote === "down-vote" ? "bg-red-200" : ""
+                  myVote?.vote === "down-vote" ? "bg-red-200" : ""
                 }`}
                 onPress={() => voteHandler("down-vote")}
               >
                 <AntDesign name="arrowdown" size={16} color={"black"} />
               </Pressable>
               <Text className="ml-2">
-                {comment?.vote?.filter((v) => v.vote === "down-vote").length}
+                {
+                  commentData?.vote?.filter((v) => v.vote === "down-vote")
+                    .length
+                }
               </Text>
             </View>
           </View>
