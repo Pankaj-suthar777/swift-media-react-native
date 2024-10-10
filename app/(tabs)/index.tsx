@@ -43,7 +43,7 @@ const HomeScreen = () => {
         setHasMore(false);
       } else {
         const newData = [...data.posts, ...res.posts];
-        queryClient.setQueryData(["posts"], { posts: newData });
+        queryClient.setQueryData(["feed-posts"], { posts: newData });
         pageNo = nextPageNo;
       }
     } catch (error) {

@@ -15,7 +15,7 @@ export const fetchPosts = async (page: number): Promise<PostsResponse> => {
 
 export const useGetFeed = (page: number) => {
   return useQuery({
-    queryKey: ["posts"],
+    queryKey: ["feed-posts"],
     queryFn: () => fetchPosts(page),
   });
 };
@@ -33,7 +33,7 @@ export const fetchUserPosts = async (
 
 export const useFetchUserPosts = (authorId: number, page: number) => {
   return useQuery({
-    queryKey: ["posts", authorId],
+    queryKey: ["author-posts", authorId],
     queryFn: () => fetchUserPosts(authorId, page),
   });
 };
@@ -63,5 +63,20 @@ export const useFetchSinglePostComment = (id: number) => {
   return useQuery({
     queryKey: ["post-comment", id],
     queryFn: () => fetchSinglePostComment(id),
+  });
+};
+
+export const fetchSavedPost = async (page: number) => {
+  const client = await getClient();
+  const response = await client.get<{ posts: Post[] }>(
+    `/post/get-saved-post?page=${page}`
+  );
+  return response.data;
+};
+
+export const useFetchSavedPost = (page: number) => {
+  return useQuery({
+    queryKey: ["saved-posts"],
+    queryFn: () => fetchSavedPost(page),
   });
 };

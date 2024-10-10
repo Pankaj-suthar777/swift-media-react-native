@@ -59,7 +59,7 @@ export default function ProfileScreen() {
   });
   const scaleName = scrollY.interpolate({
     inputRange: [0, offset],
-    outputRange: [1, 0.8],
+    outputRange: [1, 0.6],
     extrapolate: "clamp",
   });
 
@@ -126,7 +126,7 @@ export default function ProfileScreen() {
             { useNativeDriver: false }
           )}
         >
-          <View className="px-5 mt-2">
+          <View className="px-5">
             <View className="flex-row items-center justify-between">
               <View>
                 <Text className="text-2xl font-bold">{data?.user?.name}</Text>
@@ -256,6 +256,7 @@ export default function ProfileScreen() {
             <Animated.View
               style={[
                 styles.image,
+
                 {
                   transform: [
                     { translateY: translateImageY },
@@ -313,14 +314,16 @@ const styles = StyleSheet.create({
     height: headerHeight,
     backgroundColor: "#f2f2f2",
     position: "absolute",
+    top: -60,
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   scrollContainer: {
-    paddingTop: headerHeight + 5,
+    paddingTop: headerHeight / 1.2,
   },
   image: {
+    marginTop: 10,
     height: imageSize,
     width: imageSize,
     borderRadius: headerHeight,
@@ -335,9 +338,9 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 30,
-    color: "#000",
+    color: "white",
     position: "absolute",
-    bottom: 0,
+    bottom: -2,
     height: headerFinalHeight,
     textAlignVertical: "center",
     letterSpacing: 2,

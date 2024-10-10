@@ -28,7 +28,7 @@ const PaginatedList = <T extends any>(props: Props<T>) => {
   return (
     <FlatList
       nestedScrollEnabled={true}
-      style={{ paddingHorizontal: 12 }}
+      style={{ paddingHorizontal: 12, paddingVertical: 8 }}
       ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       onEndReached={(info) => {
         if (!hasMore || isFetching) return;

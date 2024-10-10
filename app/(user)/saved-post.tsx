@@ -1,44 +1,40 @@
-import { fetchUserPosts, useFetchUserPosts } from "@/hooks/query/postQuery";
-import { useAuthStore } from "@/store/authStore";
-import { Text, View } from "react-native";
-import PaginatedList from "../ui/PaginatedList";
+import Post from "@/components/post/Post";
+import EmptyRecords from "@/components/ui/EmptyRecords";
+import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
+import PaginatedList from "@/components/ui/PaginatedList";
+import { fetchSavedPost, useFetchSavedPost } from "@/hooks/query/postQuery";
+import React, { useState } from "react";
+import { View } from "react-native";
 import { useQueryClient } from "react-query";
-import { useState } from "react";
-import LoadingAnimation from "../LoadingAnimation";
-import EmptyRecords from "../ui/EmptyRecords";
-import Post from "../post/Post";
 
 let pageNo = 0;
 
-const PostsTab = ({ userId }: { userId: number }) => {
+const SavedPostScreen = () => {
   const queryClient = useQueryClient();
 
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const { data, isLoading, isFetching } = useFetchSavedPost(0);
 
-  const { data, isLoading, isFetching } = useFetchUserPosts(userId, 0);
-
-  if (isLoading) {
-    return (
-      <View className="flex-1 flex-row justify-center items-start z-10 mt-8">
-        <LoadingAnimation />
-      </View>
-    );
-  }
+  const handleOnRefresh = () => {
+    pageNo = 0;
+    setHasMore(true);
+    queryClient.invalidateQueries(["saved-posts"]);
+  };
 
   const handleOnEndReached = async () => {
-    if (!data || !hasMore) return;
+    if (!data || !hasMore || isFetchingMore) return;
 
     setIsFetchingMore(true);
     try {
       const nextPageNo = pageNo + 1;
-      const res = await fetchUserPosts(userId, nextPageNo);
+      const res = await fetchSavedPost(nextPageNo);
 
       if (!res || !res.posts.length) {
         setHasMore(false);
       } else {
         const newData = [...data.posts, ...res.posts];
-        queryClient.setQueryData(["author-posts"], { posts: newData });
+        queryClient.setQueryData(["saved-posts"], { posts: newData });
         pageNo = nextPageNo;
       }
     } catch (error) {
@@ -49,8 +45,12 @@ const PostsTab = ({ userId }: { userId: number }) => {
     }
   };
 
+  if (isLoading) {
+    return <LoaderFullScreen />;
+  }
+
   return (
-    <View className="">
+    <View>
       <PaginatedList
         data={data?.posts}
         renderItem={({ item }) => <Post post={item} />}
@@ -61,12 +61,13 @@ const PostsTab = ({ userId }: { userId: number }) => {
           </View>
         }
         refreshing={isFetching}
+        onRefresh={handleOnRefresh}
         isFetching={isFetchingMore}
         hasMore={hasMore}
       />
-      <View className="flex-grow h-4 mt-16 w-full"></View>
+      <View className="flex-grow h-12 mt-16 w-full"></View>
     </View>
   );
 };
 
-export default PostsTab;
+export default SavedPostScreen;

@@ -1,4 +1,4 @@
-const baseURL = "http://192.168.191.227:5000/api";
+const baseURL = "http://192.168.236.227:5000/api";
 //const baseURL = "https://swift-media-mern.onrender.com/api";
 
 import { getFromAsyncStorage, Keys } from "@/utils/asyncStorage";

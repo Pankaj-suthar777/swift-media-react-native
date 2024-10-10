@@ -10,7 +10,7 @@ export default function StackLayout() {
           name="profile/[userId]"
           options={{
             title: "Profile",
-            headerShown: false,
+            headerShown: true,
           }}
         />
         <Stack.Screen
@@ -61,6 +61,20 @@ export default function StackLayout() {
             presentation: "modal",
             animation: "slide_from_bottom",
             headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="saved-post"
+          options={{
+            headerShown: true,
+            title: "Saved Post",
+          }}
+        />
+        <Stack.Screen
+          name="change-password"
+          options={{
+            headerShown: true,
+            title: "Change Password",
           }}
         />
       </Stack>
