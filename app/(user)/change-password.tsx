@@ -1,15 +1,22 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import CustomTextInput from "@/components/ui/TextInput";
 import { z } from "zod";
-const editProfileSchema = z.object({
-  oldPassword: z.string().min(6, "Password should be at least 6 characters."),
-  newPassword: z
-    .string()
-    .min(6, "new password should be at least 6 characters."),
-  confirmPassword: z.string(),
-});
+import { zodResolver } from "@hookform/resolvers/zod";
+import Button from "@/components/ui/Button";
+const changePasswordSchema = z
+  .object({
+    oldPassword: z.string().min(6, "Password should be at least 6 characters."),
+    newPassword: z
+      .string()
+      .min(6, "new password should be at least 6 characters."),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match.",
+    path: ["confirmPassword"],
+  });
 
 const ChangePassword = () => {
   const {
@@ -18,28 +25,68 @@ const ChangePassword = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
-      name: userInfo?.name || "",
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     },
-    resolver: zodResolver(editProfileSchema),
+    resolver: zodResolver(changePasswordSchema),
   });
   return (
     <View>
       <View className="mx-4 mt-4">
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { value, onChange, onBlur } }) => (
-            <CustomTextInput
-              label="Name"
-              placeholder="Enter your name"
-              autoCapitalize="none"
-              onChange={onChange}
-              value={value}
-              errorMsg={errors.name?.message}
-            />
-          )}
-        />
-      </View>{" "}
+        <View className="py-2">
+          <Controller
+            control={control}
+            name="oldPassword"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CustomTextInput
+                label="Old Password"
+                placeholder="******"
+                autoCapitalize="none"
+                onChange={onChange}
+                value={value}
+                errorMsg={errors.oldPassword?.message}
+              />
+            )}
+          />
+        </View>
+        <View className="py-2">
+          <Controller
+            control={control}
+            name="newPassword"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CustomTextInput
+                label="New Password"
+                placeholder="******"
+                autoCapitalize="none"
+                onChange={onChange}
+                value={value}
+                errorMsg={errors.newPassword?.message}
+              />
+            )}
+          />
+        </View>
+        <View className="py-2">
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field: { value, onChange, onBlur } }) => (
+              <CustomTextInput
+                label="Confirm Password"
+                placeholder="******"
+                autoCapitalize="none"
+                onChange={onChange}
+                value={value}
+                errorMsg={errors.confirmPassword?.message}
+              />
+            )}
+          />
+        </View>
+
+        <Button isLoading={isSubmitting} onPress={handleSubmit(() => {})}>
+          Save
+        </Button>
+      </View>
     </View>
   );
 };

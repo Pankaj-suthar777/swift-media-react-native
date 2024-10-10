@@ -175,7 +175,7 @@ const EditScreen = () => {
           />
         </View>
 
-        <View className="mx-4 mt-8">
+        <View className="mx-4 mt-8 mb-8">
           <Button isLoading={isSubmitting} onPress={handleSubmit(onSubmit)}>
             Save
           </Button>
