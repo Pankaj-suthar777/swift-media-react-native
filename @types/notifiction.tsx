@@ -5,8 +5,7 @@ export interface Notification {
   message: string;
   created_at: string;
   user_id: number;
-  author: User;
-  user: User[];
+  user: User;
   isSeen: boolean;
   image: string;
 }

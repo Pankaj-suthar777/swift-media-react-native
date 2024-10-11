@@ -1,3 +1,4 @@
+import { Notification } from "@/@types/notifiction";
 import { User } from "@/@types/user";
 import { getClient } from "@/api/client";
 import { useQuery } from "react-query";
@@ -113,5 +114,35 @@ export const useFetchIsFollow = (id: number) => {
   return useQuery({
     queryKey: ["is-follow", id],
     queryFn: () => fetchIsFollow(id),
+  });
+};
+
+export const fetchMyNotificationsCount = async () => {
+  const client = await getClient();
+  const response = await client.get<{ notificationsCount: number }>(
+    "/user/get-notification-count"
+  );
+  return response.data;
+};
+
+export const useFetchMyNotificationsCountQuery = () => {
+  return useQuery({
+    queryKey: ["notifictions-count"],
+    queryFn: fetchMyNotificationsCount,
+  });
+};
+
+export const fetchMyNotifications = async () => {
+  const client = await getClient();
+  const response = await client.get<{ notifications: Notification[] }>(
+    "/user/get-notification"
+  );
+  return response.data;
+};
+
+export const useFetchMyNotifications = () => {
+  return useQuery({
+    queryKey: ["notifictions"],
+    queryFn: fetchMyNotifications,
   });
 };

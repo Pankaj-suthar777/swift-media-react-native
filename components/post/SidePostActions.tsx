@@ -33,7 +33,7 @@ const SidePostActions = ({ post }: { post: IPost }) => {
     mutate({ vote: v });
 
     queryClient.setQueryData(
-      ["posts"],
+      ["feed-posts"],
       (oldData: { posts: IPost[] } | undefined) => {
         if (!oldData || oldData.posts.length === 0) {
           return { posts: [] };

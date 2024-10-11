@@ -77,6 +77,13 @@ export default function StackLayout() {
             title: "Change Password",
           }}
         />
+        <Stack.Screen
+          name="notifictions"
+          options={{
+            headerShown: true,
+            title: "Notifictions",
+          }}
+        />
       </Stack>
     </SocketContextProvider>
   );
