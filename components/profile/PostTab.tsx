@@ -7,6 +7,7 @@ import { useState } from "react";
 import LoadingAnimation from "../LoadingAnimation";
 import EmptyRecords from "../ui/EmptyRecords";
 import Post from "../post/Post";
+import { Post as IPost } from "@/@types/post";
 
 let pageNo = 0;
 
@@ -18,14 +19,6 @@ const PostsTab = ({ userId }: { userId: number }) => {
 
   const { data, isLoading, isFetching } = useFetchUserPosts(userId, 0);
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 flex-row justify-center items-start z-10 mt-8">
-        <LoadingAnimation />
-      </View>
-    );
-  }
-
   const handleOnEndReached = async () => {
     if (!data || !hasMore) return;
 
@@ -33,12 +26,19 @@ const PostsTab = ({ userId }: { userId: number }) => {
     try {
       const nextPageNo = pageNo + 1;
       const res = await fetchUserPosts(userId, nextPageNo);
-
       if (!res || !res.posts.length) {
         setHasMore(false);
       } else {
-        const newData = [...data.posts, ...res.posts];
-        queryClient.setQueryData(["author-posts"], { posts: newData });
+        queryClient.setQueryData(
+          ["author-posts", userId],
+          (oldData: { posts: IPost[] } | undefined) => {
+            if (!oldData) {
+              return { posts: [] };
+            }
+            const newPostsArray = [...oldData.posts, ...res.posts];
+            return { posts: newPostsArray };
+          }
+        );
         pageNo = nextPageNo;
       }
     } catch (error) {
@@ -48,6 +48,14 @@ const PostsTab = ({ userId }: { userId: number }) => {
       setIsFetchingMore(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 flex-row justify-center items-start z-10 mt-8">
+        <LoadingAnimation />
+      </View>
+    );
+  }
 
   return (
     <View className="">

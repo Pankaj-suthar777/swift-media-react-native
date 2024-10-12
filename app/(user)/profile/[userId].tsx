@@ -22,7 +22,7 @@ export default function ProfileScreen() {
 
   const onRefresh = async () => {
     await refetch();
-    queryClient.invalidateQueries(["posts", userId]);
+    queryClient.invalidateQueries(["author-posts", parseInt(userId as string)]);
   };
 
   const { data: chatData } = useFetchOtherUserChatWithMe(
