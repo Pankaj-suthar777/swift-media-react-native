@@ -27,7 +27,7 @@ export const SocketContextProvider = ({
 
   useEffect(() => {
     if (userInfo) {
-      const newSocket = io("http://192.168.236.227:5000", {
+      const newSocket = io("https://swift-media-mern.onrender.com", {
         query: {
           userId: userInfo.id,
         },
