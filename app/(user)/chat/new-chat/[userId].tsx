@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, Link, router } from "expo-router";
-import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
+import useSendMessageMutation from "@/hooks/mutation/chat/useSendMessageMutation";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchUser } from "@/hooks/query/userQuery";
 import { useChatStore } from "@/store/chatStore";

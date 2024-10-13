@@ -2,7 +2,7 @@ import AboutTab from "@/components/profile/AboutTab";
 import PostsTab from "@/components/profile/PostTab";
 import Button from "@/components/ui/Button";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
-import useFollowUserMutation from "@/hooks/mutation/useFollowUserMutation";
+import useFollowUserMutation from "@/hooks/mutation/user/useFollowUserMutation";
 import { useFetchOtherUserChatWithMe } from "@/hooks/query/chatQuery";
 import { useFetchIsFollow, useFetchUser } from "@/hooks/query/userQuery";
 import { router, useLocalSearchParams } from "expo-router";

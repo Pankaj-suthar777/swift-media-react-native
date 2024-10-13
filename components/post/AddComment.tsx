@@ -1,5 +1,5 @@
 import { Comment } from "@/@types/comment";
-import useAddCommentMutation from "@/hooks/mutation/useAddCommentMutation";
+import useAddCommentMutation from "@/hooks/mutation/post-comment/useAddCommentMutation";
 import { useAuthStore } from "@/store/authStore";
 import { useEffect, useState } from "react";
 import {

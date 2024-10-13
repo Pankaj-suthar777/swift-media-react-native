@@ -1,6 +1,6 @@
 import { ReplayToReplayComment as IReplayToReplayComment } from "@/@types/ReplyToReply";
 import { ReplayToReplyCommentVote, VoteType } from "@/@types/vote";
-import useToogleReplayoReplyCommentVoteMutation from "@/hooks/mutation/useToogleReplayoReplyCommentVoteMutation";
+import useToogleReplayoReplyCommentVoteMutation from "@/hooks/mutation/post-comment-vote/useToogleReplayoReplyCommentVoteMutation";
 import { useAuthStore } from "@/store/authStore";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";

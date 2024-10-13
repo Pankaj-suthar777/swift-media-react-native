@@ -19,7 +19,7 @@ import moment from "moment";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, Link, useLocalSearchParams } from "expo-router";
 import { useFetchChatMessageQuery } from "@/hooks/query/chatQuery";
-import useSendMessageMutation from "@/hooks/mutation/useSendMessageMutation";
+import useSendMessageMutation from "@/hooks/mutation/chat/useSendMessageMutation";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
 import { useSocketContext } from "@/context/SocketContext";

@@ -20,8 +20,8 @@ import Button from "../ui/Button";
 import { useQueryClient } from "react-query";
 import { useReplayModalStore } from "@/store/replayModalStore";
 import moment from "moment";
-import useAddReplayCommentMutation from "@/hooks/mutation/useAddReplayCommentMutation";
-import useAddReplayToReplyMutation from "@/hooks/mutation/useAddReplayToReplyMutation";
+import useAddReplayCommentMutation from "@/hooks/mutation/post-comment/useAddReplayCommentMutation";
+import useAddReplayToReplyMutation from "@/hooks/mutation/post-comment/useAddReplayToReplyMutation";
 import { useLocalSearchParams } from "expo-router";
 import { Comment as IComment } from "@/@types/comment";
 

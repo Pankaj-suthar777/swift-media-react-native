@@ -7,7 +7,7 @@ import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReplayModalStore } from "@/store/replayModalStore";
 import { router } from "expo-router";
 import { useAuthStore } from "@/store/authStore";
-import useToogleReplayCommentVoteMutation from "@/hooks/mutation/useToogleReplayCommentVoteMutation";
+import useToogleReplayCommentVoteMutation from "@/hooks/mutation/post-comment-vote/useToogleReplayCommentVoteMutation";
 import { ReplayToCommentVote, VoteType } from "@/@types/vote";
 
 const ReplayComment = ({ comment }: { comment: ReplyToComment }) => {

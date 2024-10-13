@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useFetchMyNotifications } from "@/hooks/query/userQuery";
 import LoaderFullScreen from "@/components/ui/LoaderFullScreen";
 import moment from "moment";
-import useSeenNotificationMutation from "@/hooks/mutation/useSeenNotificationMutation";
+import useSeenNotificationMutation from "@/hooks/mutation/notifiction/useSeenNotificationMutation";
 import EmptyRecords from "@/components/ui/EmptyRecords";
 
 const NotifictionsScreen = () => {

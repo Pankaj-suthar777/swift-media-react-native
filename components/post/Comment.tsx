@@ -7,7 +7,7 @@ import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReplayModalStore } from "@/store/replayModalStore";
 import { useAuthStore } from "@/store/authStore";
 import { router } from "expo-router";
-import useToogleCommentVoteMutation from "@/hooks/mutation/useToogleCommentVoteMutation";
+import useToogleCommentVoteMutation from "@/hooks/mutation/post-comment-vote/useToogleCommentVoteMutation";
 import { CommentVote, VoteType } from "@/@types/vote";
 import { useQueryClient } from "react-query";
 

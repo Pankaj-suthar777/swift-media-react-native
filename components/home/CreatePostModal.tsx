@@ -15,7 +15,7 @@ import {
   ScrollView,
 } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import useCreatePostMutation from "@/hooks/mutation/useCreatePostMutation";
+import useCreatePostMutation from "@/hooks/mutation/post/useCreatePostMutation";
 import { uploadFilesToFirebaseAndGetUrl } from "@/utils/file-upload";
 import { AntDesign } from "@expo/vector-icons";
 import Button from "../ui/Button";

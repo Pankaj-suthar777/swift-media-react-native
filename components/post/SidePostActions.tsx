@@ -5,9 +5,9 @@ import Entypo from "@expo/vector-icons/Entypo";
 import { Post as IPost } from "@/@types/post";
 import { useAuthStore } from "@/store/authStore";
 import { VoteType } from "@/@types/vote";
-import useVotePostMutation from "@/hooks/mutation/useVotePostMutation";
+import useVotePostMutation from "@/hooks/mutation/post/useVotePostMutation";
 import { useQueryClient } from "react-query";
-import useSavePostMutation from "@/hooks/mutation/useSavePostMutation";
+import useSavePostMutation from "@/hooks/mutation/post/useSavePostMutation";
 import { Share } from "react-native";
 
 const SidePostActions = ({ post }: { post: IPost }) => {

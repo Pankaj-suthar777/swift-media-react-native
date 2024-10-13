@@ -5,7 +5,7 @@ import CustomTextInput from "@/components/ui/TextInput";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@/components/ui/Button";
-import useUpdatePasswordMutation from "@/hooks/mutation/useUpdatePasswordMutation";
+import useUpdatePasswordMutation from "@/hooks/mutation/user/useUpdatePasswordMutation";
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(6, "Password should be at least 6 characters."),
